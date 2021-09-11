@@ -1,0 +1,5 @@
+book_filename: "Kouassi_2021_Controle_Insectes_Tomate"
+delete_merged_file: true
+language:
+  ui:
+    chapter_name: "Chapter "
