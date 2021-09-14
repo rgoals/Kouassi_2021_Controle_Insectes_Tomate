@@ -1,34 +1,130 @@
 --- 
 title: "A Minimal Book Example"
-author: "Yihui Xie"
+author: "Kouassi M. 2021"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
-bibliography: [book.bib, packages.bib]
+#bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+description: "The output format for this example is bookdown::gitbook."
 ---
 
-# Prerequisites
+# Présentation du projet selon ma lecture (du projet) à l'issue des 2 soutenances
 
-This is a _sample_ book written in **Markdown**. You can use anything that Pandoc's Markdown supports, e.g., a math equation $a^2 + b^2 = c^2$.
+Impacts des insectes ravageurs sur la croissance et le rendement de la tomate (_Solanum lycopercinum_ L.) sous différentes méthodes de contrôle au carré potager de l’UPGC - Korhogo ; à travers une étude comparée au champ de quatre méthodes de contrôle. (=> tentative de résumé de tout en un !)
 
-The **bookdown** package can be installed from CRAN or Github:
+## Dispositif expérimental
 
-```{r eval=FALSE}
-install.packages("bookdown")
-# or the development version
-# devtools::install_github("rstudio/bookdown")
+Blocs complets aléatoires, quatre traitements, 2 répétitions.
+
+Les traitements :
+
+1. T0, le témoin,
+1. T1, filet de protection anti-insectes,
+1. T2, lutte mécanique,
+1. T3, Insecticide Cigogne EC 50.
+
+Donc 8 unités expérimentales (UE) au total, 12 plants espacés de 50 cm sur 3 rangs par UE. Mesures effectuées systématiquement sur 10 plants par UE (et une moyenne est ou sera calculée par plant ou par unité de surface), par UE.
+
+
+## Objectif général
+
+.. aider l'apprenant à proposer ...
+
+## Objectifs spécifiques
+
+.. aider l'apprenant à proposer ...
+
+## Données collectées
+
+- Le nombre de feuilles présentant des attaques supposées d'insectes
+
+- Quelques catégorisations d'attaques comme :
+
+  - le nombre de feuilles attaquées (va falloir clarifer ce qu'on entend par là), 
+  - le nombre de feuilles perforées
+  - le nombre de feuilles jaunies, 
+  - le nombre de feuilles perforées et jaunies. 
+
+
+- La sévérité des cas de perforation du type :
+
+  - perforations totalisant 1 à 5 trous, 
+  - perforations totalisant plus de 6 trous. 
+
+- La croissance en hauteur des plants.
+
+- Le nombre de fruits récoltés
+
+- Et, le rendement (masse de tomate récoltée par unité de surface).
+
+Collecte réalisée durant quatre semaines pour certaines variables.
+
+## Méthodes d'analyses
+
+Colecte et organisation des données en Excel, figures en Excel.
+
+Test du Khi-2 avec ...
+
+ANOVA avec ....
+
+Lorsque différence significative ... tests post-hoc de comparaisons multiples par paires avec ...
+
+
+## Les librairies
+
+J'ai fait mes analyses en R version .....
+
+Ces calculs ont nécessité l'utilisation des packages (modules ou librairies) suivant.es :
+
+```{r message=FALSE, warning=FALSE}
+library("ggpubr")    # ggqqplot()
+library("agricolae") # SNK.test()
+library("car")       # levene_test()
+library("rstatix")   # identify_outliers()
+library("Rmisc")     # summarySE()
+library("tidyverse") # dplyr, ggplot2
+library("emmeans")   # emmeans()
 ```
 
-Remember each Rmd file contains one and only one chapter, and a chapter is defined by the first-level heading `#`.
+Les chapitres suivant donnent les détails des analyses effectuées.
 
-To compile this example to PDF, you need XeLaTeX. You are recommended to install TinyTeX (which includes XeLaTeX): <https://yihui.org/tinytex/>.
 
-```{r include=FALSE}
-# automatically create a bib database for R packages
-knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
-), 'packages.bib')
-```
+## Thèmes de stage
+
+Koffi Amoin Marina
+
+> **Impacts des insectes ravageurs et croissance de la tomate (*Solanum lycopercicum* L.) sous différentes méthodes de contrôle au carré potager de l’UPGC - Korhogo**.
+
+Diambla Bi Vanie Esai Monami
+
+> **Effet de différentes méthodes de contrôle des insectes ravageurs sur le rendement de la tomate (*Solanum lycopercicum* L.) au carré potager de l’UPGC - Korhogo**.
+
+
+## Quelques remarques
+
+Il y a certainement trop de variables présentées avec le thème de Mme Koffi, si on les trouve toutes pertinentes ! Peut-être sortir la croissance de son thème et l'ajouter à celui de M. Diambla pour lui permettre d'avoir des nombres de pages conséquents par partie. C'est juste une proposition. 
+
+J'ai exploré les données sans ténir compte de pourquoi vous avez choisi de mesurer telle ou telle variable (beaucoup plus *défense des cultures*). Pour le nombre de trous dans les feuilles, j'ai regroupé les deux dernières catégories : 6 à 10 trous, et 10 trous et plus, en **6 trous et plus**. Il y avait trop de zéros ...
+
+
+J'attends toujours les données de M. Diambla. Entre-temps, je trouverai du temps pour revérifier les analyses. L'actualisation est automatique en ligne donc vous aurez toujours accès à la dernière version. Pour l'instant les étudiant, ne l'ont pas !
+
+
+Bien-à-vous.
+
+**ZC.**
+
+
+
+
+
+
+
+
+
+
+
+
+
