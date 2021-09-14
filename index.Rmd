@@ -1,5 +1,5 @@
 --- 
-title: "A Minimal Book Example"
+title: "Exploration de données"
 author: "Kouassi M. 2021"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -7,7 +7,7 @@ documentclass: book
 #bibliography: [book.bib, packages.bib]
 biblio-style: apalike
 link-citations: yes
-description: "The output format for this example is bookdown::gitbook."
+description: "Contrôle des insectes ravageurs de la tomate"
 ---
 
 # Présentation du projet selon ma lecture (du projet) à l'issue des 2 soutenances

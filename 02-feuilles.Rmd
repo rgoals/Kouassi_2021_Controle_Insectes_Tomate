@@ -108,7 +108,7 @@ plot(pairs(pwc_lm1))
 
 > **NB**
 >
-> **Pour vous faciliter la lecture de la figure cidessus, les éléments d'une paire comparée ne sont significativement différents que lorsque la bande grisée (le point noir est la moyenne et la bande limite l'intervalle de confiance de la moyenne), ne croise pas la ligne imaginaire verticale passant par zéro.**
+> **Pour vous faciliter la lecture de la figure ci-dessus, les éléments d'une paire comparée ne sont significativement différents que lorsque la bande grisée (le point noir est la moyenne et la bande limite l'intervalle de confiance de la moyenne), ne croise pas la ligne imaginaire verticale passant par zéro.**
 
 Je calcule les moyennes et écart-types et j'ajoute une colonne à la main pour constituer les groupes.
 
