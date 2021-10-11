@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Chapitre 10 Rendement tomate | Exploration de données</title>
+  <meta name="description" content="Contrôle des insectes ravageurs de la tomate" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Chapitre 10 Rendement tomate | Exploration de données" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Contrôle des insectes ravageurs de la tomate" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Chapitre 10 Rendement tomate | Exploration de données" />
+  
+  <meta name="twitter:description" content="Contrôle des insectes ravageurs de la tomate" />
+  
+
+<meta name="author" content="Kouassi M. 2021" />
+
+
+<meta name="date" content="2021-10-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="nombre-de-fruits-récoltés.html"/>
+<link rel="next" href="references.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Présentation du projet selon ma lecture (du projet) à l’issue des 2 soutenances</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#dispositif-expérimental"><i class="fa fa-check"></i><b>1.1</b> Dispositif expérimental</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#objectif-général"><i class="fa fa-check"></i><b>1.2</b> Objectif général</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#objectifs-spécifiques"><i class="fa fa-check"></i><b>1.3</b> Objectifs spécifiques</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#données-collectées"><i class="fa fa-check"></i><b>1.4</b> Données collectées</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#méthodes-danalyses"><i class="fa fa-check"></i><b>1.5</b> Méthodes d’analyses</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#les-librairies"><i class="fa fa-check"></i><b>1.6</b> Les librairies</a></li>
+<li class="chapter" data-level="1.7" data-path="index.html"><a href="index.html#thèmes-de-stage"><i class="fa fa-check"></i><b>1.7</b> Thèmes de stage</a></li>
+<li class="chapter" data-level="1.8" data-path="index.html"><a href="index.html#quelques-remarques"><i class="fa fa-check"></i><b>1.8</b> Quelques remarques</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html"><i class="fa fa-check"></i><b>2</b> Feuilles attaquées</a><ul>
+<li class="chapter" data-level="2.1" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#les-données"><i class="fa fa-check"></i><b>2.1</b> Les données</a></li>
+<li class="chapter" data-level="2.2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#visualisation-boxplots"><i class="fa fa-check"></i><b>2.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="2.3" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#détection-des-observations-aberrantes-extrêmes"><i class="fa fa-check"></i><b>2.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="2.4" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#lanova"><i class="fa fa-check"></i><b>2.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-1-1ère-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="2.4.2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-2-2è-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="2.4.3" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-3-3è-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="2.4.4" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-4-4è-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#évolution-du-nombre-de-feuilles-attaquées-au-cours-du-temps"><i class="fa fa-check"></i><b>2.5</b> Évolution du nombre de feuilles attaquées au cours du temps</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#sommaire"><i class="fa fa-check"></i><b>2.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="2.5.2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#visualisation"><i class="fa fa-check"></i><b>2.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="2.5.3" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#effet-du-temps"><i class="fa fa-check"></i><b>2.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html"><i class="fa fa-check"></i><b>3</b> Feuilles perforées</a><ul>
+<li class="chapter" data-level="3.1" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#les-données-1"><i class="fa fa-check"></i><b>3.1</b> Les données</a></li>
+<li class="chapter" data-level="3.2" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#visualisation-boxplots-1"><i class="fa fa-check"></i><b>3.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="3.3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#détection-des-observations-aberrantes-extrêmes-1"><i class="fa fa-check"></i><b>3.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="3.4" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#lanova-1"><i class="fa fa-check"></i><b>3.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-1-1ère-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="3.4.2" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-2-2è-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="3.4.3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-3-3è-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="3.4.4" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-4-4è-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#évolution-du-nombre-de-feuilles-perforées-au-cours-du-temps"><i class="fa fa-check"></i><b>3.5</b> Évolution du nombre de feuilles perforées au cours du temps</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#sommaire-1"><i class="fa fa-check"></i><b>3.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="3.5.2" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#visualisation-1"><i class="fa fa-check"></i><b>3.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="3.5.3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#effet-du-temps-1"><i class="fa fa-check"></i><b>3.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html"><i class="fa fa-check"></i><b>4</b> Perforation, 1 à 5 trous</a><ul>
+<li class="chapter" data-level="4.1" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#les-données-2"><i class="fa fa-check"></i><b>4.1</b> Les données</a></li>
+<li class="chapter" data-level="4.2" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#visualisation-boxplots-2"><i class="fa fa-check"></i><b>4.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="4.3" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#détection-des-observations-aberrantes-extrêmes-2"><i class="fa fa-check"></i><b>4.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="4.4" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#lanova-2"><i class="fa fa-check"></i><b>4.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-1-1ère-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-2-2è-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="4.4.3" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-3-3è-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="4.4.4" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-4-4è-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#évolution-du-nombre-de-feuilles-avec-1-à-5-trous-au-cours-du-temps"><i class="fa fa-check"></i><b>4.5</b> Évolution du Nombre de feuilles avec 1 à 5 trous au cours du temps</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#sommaire-2"><i class="fa fa-check"></i><b>4.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="4.5.2" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#visualisation-2"><i class="fa fa-check"></i><b>4.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="4.5.3" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#effet-du-temps-2"><i class="fa fa-check"></i><b>4.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html"><i class="fa fa-check"></i><b>5</b> Perforation, plus de 6 trous</a><ul>
+<li class="chapter" data-level="5.1" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#les-données-3"><i class="fa fa-check"></i><b>5.1</b> Les données</a></li>
+<li class="chapter" data-level="5.2" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#visualisation-boxplots-3"><i class="fa fa-check"></i><b>5.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="5.3" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#détection-des-observations-aberrantes-extrêmes-3"><i class="fa fa-check"></i><b>5.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="5.4" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#lanova-3"><i class="fa fa-check"></i><b>5.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-1-1ère-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-2-2è-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="5.4.3" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-3-3è-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="5.4.4" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-4-4è-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#évolution-du-nombre-de-feuilles-avec-plus-de-6-trous-au-cours-du-temps"><i class="fa fa-check"></i><b>5.5</b> Évolution du Nombre de feuilles avec plus de 6 trous au cours du temps</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#sommaire-3"><i class="fa fa-check"></i><b>5.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="5.5.2" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#visualisation-3"><i class="fa fa-check"></i><b>5.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="5.5.3" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#effet-du-temps-3"><i class="fa fa-check"></i><b>5.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html"><i class="fa fa-check"></i><b>6</b> Jaunissement des feuilles</a><ul>
+<li class="chapter" data-level="6.1" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#les-données-4"><i class="fa fa-check"></i><b>6.1</b> Les données</a></li>
+<li class="chapter" data-level="6.2" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#visualisation-boxplots-4"><i class="fa fa-check"></i><b>6.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="6.3" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#détection-des-observations-aberrantes-extrêmes-4"><i class="fa fa-check"></i><b>6.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="6.4" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#lanova-4"><i class="fa fa-check"></i><b>6.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-1-1ère-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="6.4.2" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-2-2è-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="6.4.3" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-3-3è-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="6.4.4" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-4-4è-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#évolution-du-nombre-de-feuilles-jaunies-au-cours-du-temps"><i class="fa fa-check"></i><b>6.5</b> Évolution du Nombre de feuilles jaunies au cours du temps</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#sommaire-4"><i class="fa fa-check"></i><b>6.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="6.5.2" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#visualisation-4"><i class="fa fa-check"></i><b>6.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="6.5.3" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#effet-du-temps-4"><i class="fa fa-check"></i><b>6.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html"><i class="fa fa-check"></i><b>7</b> Jaunissement et perforation</a><ul>
+<li class="chapter" data-level="7.1" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#les-données-5"><i class="fa fa-check"></i><b>7.1</b> Les données</a></li>
+<li class="chapter" data-level="7.2" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#visualisation-boxplots-5"><i class="fa fa-check"></i><b>7.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="7.3" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#détection-des-observations-aberrantes-extrêmes-5"><i class="fa fa-check"></i><b>7.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="7.4" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#lanova-5"><i class="fa fa-check"></i><b>7.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-1-1ère-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="7.4.2" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-2-2è-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="7.4.3" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-3-3è-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="7.4.4" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-4-4è-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#évolution-du-nombre-de-feuilles-jaunies-et-perforées-au-cours-du-temps"><i class="fa fa-check"></i><b>7.5</b> Évolution du Nombre de feuilles jaunies et perforées au cours du temps</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#sommaire-5"><i class="fa fa-check"></i><b>7.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="7.5.2" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#visualisation-5"><i class="fa fa-check"></i><b>7.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="7.5.3" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#effet-du-temps-5"><i class="fa fa-check"></i><b>7.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html"><i class="fa fa-check"></i><b>8</b> Hauteur des plants</a><ul>
+<li class="chapter" data-level="8.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#les-données-6"><i class="fa fa-check"></i><b>8.1</b> Les données</a></li>
+<li class="chapter" data-level="8.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#visualisation-boxplots-6"><i class="fa fa-check"></i><b>8.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="8.3" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#détection-des-valeurs-aberrantes-extrêmes"><i class="fa fa-check"></i><b>8.3</b> Détection des valeurs aberrantes extrêmes</a></li>
+<li class="chapter" data-level="8.4" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#conditions-de-lanova"><i class="fa fa-check"></i><b>8.4</b> Conditions de l’ANOVA</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#normalité"><i class="fa fa-check"></i><b>8.4.1</b> Normalité</a></li>
+<li class="chapter" data-level="8.4.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#homogénéité-des-variances"><i class="fa fa-check"></i><b>8.4.2</b> Homogénéité des variances</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#anovas"><i class="fa fa-check"></i><b>8.5</b> ANOVAs</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-1"><i class="fa fa-check"></i><b>8.5.1</b> Semaine 1</a></li>
+<li class="chapter" data-level="8.5.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-2"><i class="fa fa-check"></i><b>8.5.2</b> Semaine 2</a></li>
+<li class="chapter" data-level="8.5.3" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-3"><i class="fa fa-check"></i><b>8.5.3</b> Semaine 3</a></li>
+<li class="chapter" data-level="8.5.4" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-4"><i class="fa fa-check"></i><b>8.5.4</b> Semaine 4</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#évolution-des-hauteurs-de-plants-au-cours-du-temps"><i class="fa fa-check"></i><b>8.6</b> Évolution des Hauteurs de plants au cours du temps</a><ul>
+<li class="chapter" data-level="8.6.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#sommaire-6"><i class="fa fa-check"></i><b>8.6.1</b> Sommaire</a></li>
+<li class="chapter" data-level="8.6.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#visualisation-6"><i class="fa fa-check"></i><b>8.6.2</b> Visualisation</a></li>
+<li class="chapter" data-level="8.6.3" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#effet-du-temps-6"><i class="fa fa-check"></i><b>8.6.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html"><i class="fa fa-check"></i><b>9</b> Nombre de fruits récoltés</a><ul>
+<li class="chapter" data-level="9.1" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#les-données-7"><i class="fa fa-check"></i><b>9.1</b> Les données</a></li>
+<li class="chapter" data-level="9.2" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#visualisation-boxplots-7"><i class="fa fa-check"></i><b>9.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="9.3" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#détection-des-observations-aberrantes-extrêmes-6"><i class="fa fa-check"></i><b>9.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="9.4" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#lanova-6"><i class="fa fa-check"></i><b>9.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#le-modèle-chi-2"><i class="fa fa-check"></i><b>9.4.1</b> Le modèle chi-2</a></li>
+<li class="chapter" data-level="9.4.2" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#comparaisons-par-paires-28"><i class="fa fa-check"></i><b>9.4.2</b> Comparaisons par paires</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="rendement-tomate.html"><a href="rendement-tomate.html"><i class="fa fa-check"></i><b>10</b> Rendement tomate</a><ul>
+<li class="chapter" data-level="10.1" data-path="rendement-tomate.html"><a href="rendement-tomate.html#les-données-8"><i class="fa fa-check"></i><b>10.1</b> Les données</a></li>
+<li class="chapter" data-level="10.2" data-path="rendement-tomate.html"><a href="rendement-tomate.html#visualisation-boxplots-8"><i class="fa fa-check"></i><b>10.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="10.3" data-path="rendement-tomate.html"><a href="rendement-tomate.html#détection-des-valeurs-aberrantes-extrêmes-1"><i class="fa fa-check"></i><b>10.3</b> Détection des valeurs aberrantes extrêmes</a></li>
+<li class="chapter" data-level="10.4" data-path="rendement-tomate.html"><a href="rendement-tomate.html#conditions-de-lanova-1"><i class="fa fa-check"></i><b>10.4</b> Conditions de l’ANOVA</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="rendement-tomate.html"><a href="rendement-tomate.html#normalité-1"><i class="fa fa-check"></i><b>10.4.1</b> Normalité</a></li>
+<li class="chapter" data-level="10.4.2" data-path="rendement-tomate.html"><a href="rendement-tomate.html#homogénéité-des-variances-1"><i class="fa fa-check"></i><b>10.4.2</b> Homogénéité des variances</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="rendement-tomate.html"><a href="rendement-tomate.html#anova"><i class="fa fa-check"></i><b>10.5</b> ANOVA</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="rendement-tomate.html"><a href="rendement-tomate.html#le-modèle-28"><i class="fa fa-check"></i><b>10.5.1</b> Le modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploration de données</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="rendement-tomate" class="section level1">
+<h1><span class="header-section-number">Chapitre 10</span> Rendement tomate</h1>
+<p>Évaluer si les rendements diffèrent significativement selon la méthode de contrôle appliquée.</p>
+<p>Jeu de données <code>diam.csv</code>.</p>
+<blockquote>
+<p><strong>La variable dépendante ici est quantitative, donc traitée comme la hauteur des plants.</strong></p>
+</blockquote>
+<div id="les-données-8" class="section level2">
+<h2><span class="header-section-number">10.1</span> Les données</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">df &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;data/diam.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb1-2" title="2">df &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">id =</span> <span class="dv">1</span><span class="op">:</span><span class="kw">nrow</span>(.), <span class="dt">.before =</span> <span class="dv">1</span>, </a>
+<a class="sourceLine" id="cb1-4" title="4">         <span class="dt">methode =</span> <span class="kw">factor</span>(methode, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;Temoin&quot;</span>, <span class="st">&quot;Filet-anti-insectes&quot;</span>, </a>
+<a class="sourceLine" id="cb1-5" title="5">                                              <span class="st">&quot;Lutte-mecanique&quot;</span>, <span class="st">&quot;Cigogne-50-EC&quot;</span>))) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="st">  </span><span class="kw">select</span>(id, bloc, methode, rdt_tha)</a></code></pre></div>
+</div>
+<div id="visualisation-boxplots-8" class="section level2">
+<h2><span class="header-section-number">10.2</span> Visualisation boxplots</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">bxp &lt;-<span class="st"> </span><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x =</span> methode, <span class="dt">y =</span> rdt_tha)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Rendement (t/ha)&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">xlab</span>(<span class="st">&quot;Méthode&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="st">  </span><span class="kw">theme_bw</span>()</a>
+<a class="sourceLine" id="cb2-5" title="5">bxp</a></code></pre></div>
+<p><img src="Kouassi_2021_Controle_Insectes_Tomate_files/figure-html/rdt-boxplot-1.png" width="672" /></p>
+<p>Il y a des variations notables d’une méthode à l’autre.</p>
+</div>
+<div id="détection-des-valeurs-aberrantes-extrêmes-1" class="section level2">
+<h2><span class="header-section-number">10.3</span> Détection des valeurs aberrantes extrêmes</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">df_out &lt;-<span class="st"> </span>df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(methode) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="st">  </span><span class="kw">identify_outliers</span>(rdt_tha)</a>
+<a class="sourceLine" id="cb3-4" title="4">df_out</a></code></pre></div>
+<pre><code>## [1] methode    id         bloc       rdt_tha    is.outlier is.extreme
+## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
+<p>=&gt; Pas d’observation aberrante extrême.</p>
+</div>
+<div id="conditions-de-lanova-1" class="section level2">
+<h2><span class="header-section-number">10.4</span> Conditions de l’ANOVA</h2>
+<div id="normalité-1" class="section level3">
+<h3><span class="header-section-number">10.4.1</span> Normalité</h3>
+<p>Si les données sont normalement distribuées, la p-value de Shapiro-Wilk doit être supérieure à 0,05 pour chaque méthode.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="st">  </span><span class="kw">shapiro_test</span>(rdt_tha)</a></code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##   variable statistic     p
+##   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;
+## 1 rdt_tha      0.912 0.370</code></pre>
+<p>=&gt; Normalité OK. Visualisation avec le QQ-plot :</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">ggqqplot</span>(df, <span class="st">&quot;rdt_tha&quot;</span>)</a></code></pre></div>
+<p><img src="Kouassi_2021_Controle_Insectes_Tomate_files/figure-html/rdt-qqplot-1.png" width="672" /></p>
+<p>Tous les points se situent approximativement le long de la ligne de référence.</p>
+</div>
+<div id="homogénéité-des-variances-1" class="section level3">
+<h3><span class="header-section-number">10.4.2</span> Homogénéité des variances</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb8-2" title="2"><span class="st">   </span><span class="kw">levene_test</span>(rdt_tha <span class="op">~</span><span class="st"> </span>methode)</a></code></pre></div>
+<pre><code>## Warning in anova.lm(lm(resp ~ group)): ANOVA F-tests on an essentially perfect
+## fit are unreliable</code></pre>
+<pre><code>## # A tibble: 1 x 4
+##     df1   df2 statistic        p
+##   &lt;int&gt; &lt;int&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1     3     4   6.65e29 7.53e-60</code></pre>
+<p>=&gt; Toutes les valeurs p sont &lt; 0.05 =&gt; les variances ne sont pas homogènes ! On verra de plus près avec les résidus de l’ANOVA.</p>
+</div>
+</div>
+<div id="anova" class="section level2">
+<h2><span class="header-section-number">10.5</span> ANOVA</h2>
+<div id="le-modèle-28" class="section level3">
+<h3><span class="header-section-number">10.5.1</span> Le modèle</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">lm &lt;-<span class="st"> </span><span class="kw">lm</span>(rdt_tha <span class="op">~</span><span class="st"> </span>methode, <span class="dt">data =</span> df)</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="kw">Anova</span>(lm)</a></code></pre></div>
+<pre><code>## Anova Table (Type II tests)
+## 
+## Response: rdt_tha
+##           Sum Sq Df F value  Pr(&gt;F)  
+## methode    5.245  3  6.4159 0.05221 .
+## Residuals  1.090  4                  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>La p-value &gt; 0.05 =&gt; pas de différence significative entre les effets des méthodes de contrôle sur le Rendement.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">shapiro_test</span>(<span class="kw">residuals</span>(lm))</a></code></pre></div>
+<pre><code>## # A tibble: 1 x 3
+##   variable      statistic p.value
+##   &lt;chr&gt;             &lt;dbl&gt;   &lt;dbl&gt;
+## 1 residuals(lm)     0.897   0.270</code></pre>
+<p>=&gt; Normalité OK.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1"><span class="kw">leveneTest</span>(<span class="kw">residuals</span>(lm) <span class="op">~</span><span class="st"> </span>df<span class="op">$</span>methode)</a></code></pre></div>
+<pre><code>## Warning in anova.lm(lm(resp ~ group)): ANOVA F-tests on an essentially perfect
+## fit are unreliable</code></pre>
+<pre><code>## Levene&#39;s Test for Homogeneity of Variance (center = median)
+##       Df   F value    Pr(&gt;F)    
+## group  3 1.847e+31 &lt; 2.2e-16 ***
+##        4                        
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>=&gt; Variances non homogènes</p>
+<p>=&gt; Alternative 1 : ANOVA de Welch</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">welch_anova_test</span>(rdt_tha <span class="op">~</span><span class="st"> </span>methode)</a></code></pre></div>
+<pre><code>## # A tibble: 1 x 7
+##   .y.         n statistic   DFn   DFd     p method     
+## * &lt;chr&gt;   &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;      
+## 1 rdt_tha     8      5.67     3  2.18 0.139 Welch ANOVA</code></pre>
+<p>=&gt; Alternative 2 : Kruskal-Wallis</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">kruskal_test</span>(rdt_tha <span class="op">~</span><span class="st"> </span>methode)</a></code></pre></div>
+<pre><code>## # A tibble: 1 x 6
+##   .y.         n statistic    df     p method        
+## * &lt;chr&gt;   &lt;int&gt;     &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;         
+## 1 rdt_tha     8      5.61     3 0.132 Kruskal-Wallis</code></pre>
+<p>=&gt; Différence non significative entre les effets des différentes méthodes de contrôle également avec ces test alternatifs.</p>
+<div id="comparaisons-par-paires-29" class="section level4">
+<h4><span class="header-section-number">10.5.1.1</span> Comparaisons par paires</h4>
+<p>=&gt; méthode non paramétrique</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">df <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="st">  </span><span class="kw">dunn_test</span>(rdt_tha <span class="op">~</span><span class="st"> </span>methode, <span class="dt">p.adjust.method =</span> <span class="st">&quot;bonferroni&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb22-3" title="3"><span class="st">  </span><span class="kw">select</span>(group1, group2, p, p.adj, p.adj.signif)<span class="co"># %&gt;% </span></a></code></pre></div>
+<pre><code>## # A tibble: 6 x 5
+##   group1              group2                   p p.adj p.adj.signif
+##   &lt;chr&gt;               &lt;chr&gt;                &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;       
+## 1 Temoin              Filet-anti-insectes 0.182  1     ns          
+## 2 Temoin              Lutte-mecanique     0.681  1     ns          
+## 3 Temoin              Cigogne-50-EC       0.124  0.741 ns          
+## 4 Filet-anti-insectes Lutte-mecanique     0.0809 0.485 ns          
+## 5 Filet-anti-insectes Cigogne-50-EC       0.837  1     ns          
+## 6 Lutte-mecanique     Cigogne-50-EC       0.0511 0.306 ns</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">  <span class="co">#filter(p.adj.signif != &quot;ns&quot;)</span></a></code></pre></div>
+<p>Supposant les conditions de l’ANOVA valide : (Student - Newman - Keuls). Mais ce n’est pas le cas.</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">(cm &lt;-<span class="st"> </span>(<span class="kw">SNK.test</span>(lm, <span class="st">&quot;methode&quot;</span>, <span class="dt">group =</span> <span class="ot">TRUE</span>))<span class="op">$</span>groups <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">methode =</span> <span class="kw">rownames</span>(.)))</a></code></pre></div>
+<pre><code>##                     rdt_tha groups             methode
+## Lutte-mecanique        4.25      a     Lutte-mecanique
+## Temoin                 4.00      a              Temoin
+## Filet-anti-insectes    2.65      a Filet-anti-insectes
+## Cigogne-50-EC          2.40      a       Cigogne-50-EC</code></pre>
+<p>Moyennes et écart-types, avec les lettres (groupes)</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1">(cm_moy &lt;-<span class="st"> </span><span class="kw">summarySE</span>(df, <span class="dt">measurevar =</span> <span class="st">&quot;rdt_tha&quot;</span>, <span class="dt">groupvars =</span> <span class="st">&quot;methode&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-2" title="2"><span class="st">  </span>data.table<span class="op">::</span><span class="kw">setorder</span>(<span class="op">-</span>rdt_tha)) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb27-3" title="3"><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">groups =</span> cm<span class="op">$</span>groups)</a></code></pre></div>
+<pre><code>##               methode N rdt_tha        sd   se       ci groups
+## 3     Lutte-mecanique 2    4.25 0.3535534 0.25 3.176551      a
+## 1              Temoin 2    4.00 0.4242641 0.30 3.811861      a
+## 2 Filet-anti-insectes 2    2.65 0.7778175 0.55 6.988413      a
+## 4       Cigogne-50-EC 2    2.40 0.4242641 0.30 3.811861      a</code></pre>
+<p>Figure pas forcément nécessaire.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1"><span class="kw">ggplot</span>(<span class="dt">data =</span> cm, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> methode, <span class="dt">y =</span> rdt_tha)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb29-2" title="2"><span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>, <span class="dt">color =</span> <span class="st">&quot;blue&quot;</span>, <span class="dt">fill =</span> <span class="st">&quot;grey&quot;</span>, <span class="dt">width =</span> <span class="fl">0.6</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb29-3" title="3"><span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> groups), <span class="dt">vjust =</span> <span class="fl">-0.5</span>, <span class="dt">size =</span> <span class="dv">4</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb29-4" title="4"><span class="st">  </span><span class="kw">ylim</span>(<span class="dv">0</span>,<span class="dv">5</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb29-5" title="5"><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Méthode&quot;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">ylab</span>(<span class="st">&quot;Rendement (t/ha)&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb29-6" title="6"><span class="st">  </span><span class="kw">theme_bw</span>()</a></code></pre></div>
+<p><img src="Kouassi_2021_Controle_Insectes_Tomate_files/figure-html/rdt-barplot-1.png" width="672" /></p>
+<p>Dans tous les cas, il n’y a pas de différence significative entre les effets des différentes méthodes de contrôle sur le rendement, avec ces données expérimentales.</p>
+
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="nombre-de-fruits-récoltés.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Kouassi_2021_Controle_Insectes_Tomate.pdf", "Kouassi_2021_Controle_Insectes_Tomate.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

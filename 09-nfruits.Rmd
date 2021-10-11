@@ -1,11 +1,101 @@
 
-# Fructification
+# Nombre de fruits récoltés
 
-En attente des données de Diambla Bi Vanié Esai Monami 
+Évaluer si le Nombre total de fruits récoltés `nfruits` diffère significativement selon la méthode de contrôle appliquée.
 
-## ab
+Jeu de données `diam.csv`.
 
-## cd
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+library("ggpubr")
+library("agricolae")
+library("car")
+library("rstatix")
+library("Rmisc")
+library("emmeans")
+library("multcomp")
+library("tidyverse")
+```
 
-## ef
+
+## Les données
+
+```{r message = FALSE, warning = FALSE}
+df <- read_csv("data/diam.csv")
+df <- df %>% 
+  mutate(id = 1:nrow(.), .before = 1, 
+         methode = factor(methode, levels = c("Temoin", "Filet-anti-insectes", 
+                                              "Lutte-mecanique", "Cigogne-50-EC"))) %>% 
+  select(id, bloc, methode, nfruits)
+```
+
+
+## Visualisation boxplots
+
+```{r nf-boxplot}
+bxp <- ggplot(df, aes(x = methode, y = nfruits)) +
+  geom_boxplot() +
+  ylab("Nombre de fruits récoltés") + xlab("Méthode") +
+  theme_bw()
+bxp
+```
+
+Il y a des différences notables entre les méthodes.
+
+## Détection des observations aberrantes extrêmes
+
+```{r}
+df_out <- df %>%
+  group_by(methode) %>%
+  identify_outliers(nfruits)
+df_out
+```
+
+=> Pas d'observation aberrante extrême pour toutes les méthodes
+
+
+## L'ANOVA
+
+### Le modèle chi-2
+
+```{r}
+lm <- glm(nfruits ~ methode, data = df, family = quasipoisson)
+Anova(lm)
+```
+
+La p-value < 0.05 => différence significative entre les effets de certaines méthodes de contrôle sur le Nombre total de fruits récoltés.
+
+
+### Comparaisons par paires
+
+```{r}
+pwc_lm = emmeans(lm, ~ methode)
+cm <- pairs(pwc_lm) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm %>% select(no_contrast, contrast, p.value) 
+```
+
+=> Différence significative pour le contrate 1. 
+
+
+```{r nf-pwc}
+plot(pairs(pwc_lm))
+```
+
+```{r}
+(cm_moy <- summarySE(df, measurevar = "nfruits", groupvars = "methode") %>% 
+   data.table::setorder(nfruits) %>% 
+   mutate(groups = cld(pwc_lm, alpha = 0.05, Letters = LETTERS)$.group))
+```
+
+Sous forme graphique ...
+
+```{r nf-barplot}
+ggplot(data = cm_moy, mapping = aes(x = methode, y = nfruits)) +
+  geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
+  geom_text(aes(label = groups), vjust = -0.5, size = 4) +
+  ylim(0, 48) +
+  xlab("Méthode") + ylab("Nombre de fruits récoltés") +
+  theme_bw()
+```
 

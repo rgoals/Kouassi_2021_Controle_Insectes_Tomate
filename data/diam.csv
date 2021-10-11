@@ -1,0 +1,9 @@
+recolte,bloc,traitement,methode,nfruits,masse_g,rdt_kgha,rdt_tha
+1,1,T0,Temoin,49,1600.2,4267.2,4.3
+1,1,T1,Filet-anti-insectes,38,1200,3200,3.2
+1,1,T2,Lutte-mecanique,46,1700.3,4534.1,4.5
+1,1,T3,Cigogne-50-EC,34,800.4,2134.4,2.1
+1,2,T0,Temoin,45,1400.1,3733.6,3.7
+1,2,T1,Filet-anti-insectes,32,800,2133.3,2.1
+1,2,T2,Lutte-mecanique,45,1500.1,4000.3,4
+1,2,T3,Cigogne-50-EC,44,1000.5,2668,2.7

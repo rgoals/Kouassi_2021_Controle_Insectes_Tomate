@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>References | Exploration de données</title>
+  <meta name="description" content="Contrôle des insectes ravageurs de la tomate" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="References | Exploration de données" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Contrôle des insectes ravageurs de la tomate" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="References | Exploration de données" />
+  
+  <meta name="twitter:description" content="Contrôle des insectes ravageurs de la tomate" />
+  
+
+<meta name="author" content="Kouassi M. 2021" />
+
+
+<meta name="date" content="2021-10-11" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="rendement-tomate.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">A Minimal Book Example</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Présentation du projet selon ma lecture (du projet) à l’issue des 2 soutenances</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#dispositif-expérimental"><i class="fa fa-check"></i><b>1.1</b> Dispositif expérimental</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#objectif-général"><i class="fa fa-check"></i><b>1.2</b> Objectif général</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#objectifs-spécifiques"><i class="fa fa-check"></i><b>1.3</b> Objectifs spécifiques</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#données-collectées"><i class="fa fa-check"></i><b>1.4</b> Données collectées</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#méthodes-danalyses"><i class="fa fa-check"></i><b>1.5</b> Méthodes d’analyses</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#les-librairies"><i class="fa fa-check"></i><b>1.6</b> Les librairies</a></li>
+<li class="chapter" data-level="1.7" data-path="index.html"><a href="index.html#thèmes-de-stage"><i class="fa fa-check"></i><b>1.7</b> Thèmes de stage</a></li>
+<li class="chapter" data-level="1.8" data-path="index.html"><a href="index.html#quelques-remarques"><i class="fa fa-check"></i><b>1.8</b> Quelques remarques</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html"><i class="fa fa-check"></i><b>2</b> Feuilles attaquées</a><ul>
+<li class="chapter" data-level="2.1" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#les-données"><i class="fa fa-check"></i><b>2.1</b> Les données</a></li>
+<li class="chapter" data-level="2.2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#visualisation-boxplots"><i class="fa fa-check"></i><b>2.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="2.3" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#détection-des-observations-aberrantes-extrêmes"><i class="fa fa-check"></i><b>2.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="2.4" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#lanova"><i class="fa fa-check"></i><b>2.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="2.4.1" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-1-1ère-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="2.4.2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-2-2è-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="2.4.3" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-3-3è-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="2.4.4" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#séance-4-4è-semaine-de-mesure"><i class="fa fa-check"></i><b>2.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="2.5" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#évolution-du-nombre-de-feuilles-attaquées-au-cours-du-temps"><i class="fa fa-check"></i><b>2.5</b> Évolution du nombre de feuilles attaquées au cours du temps</a><ul>
+<li class="chapter" data-level="2.5.1" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#sommaire"><i class="fa fa-check"></i><b>2.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="2.5.2" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#visualisation"><i class="fa fa-check"></i><b>2.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="2.5.3" data-path="feuilles-attaquées.html"><a href="feuilles-attaquées.html#effet-du-temps"><i class="fa fa-check"></i><b>2.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html"><i class="fa fa-check"></i><b>3</b> Feuilles perforées</a><ul>
+<li class="chapter" data-level="3.1" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#les-données-1"><i class="fa fa-check"></i><b>3.1</b> Les données</a></li>
+<li class="chapter" data-level="3.2" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#visualisation-boxplots-1"><i class="fa fa-check"></i><b>3.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="3.3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#détection-des-observations-aberrantes-extrêmes-1"><i class="fa fa-check"></i><b>3.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="3.4" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#lanova-1"><i class="fa fa-check"></i><b>3.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="3.4.1" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-1-1ère-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="3.4.2" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-2-2è-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="3.4.3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-3-3è-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="3.4.4" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#séance-4-4è-semaine-de-mesure-1"><i class="fa fa-check"></i><b>3.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#évolution-du-nombre-de-feuilles-perforées-au-cours-du-temps"><i class="fa fa-check"></i><b>3.5</b> Évolution du nombre de feuilles perforées au cours du temps</a><ul>
+<li class="chapter" data-level="3.5.1" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#sommaire-1"><i class="fa fa-check"></i><b>3.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="3.5.2" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#visualisation-1"><i class="fa fa-check"></i><b>3.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="3.5.3" data-path="feuilles-perforées.html"><a href="feuilles-perforées.html#effet-du-temps-1"><i class="fa fa-check"></i><b>3.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html"><i class="fa fa-check"></i><b>4</b> Perforation, 1 à 5 trous</a><ul>
+<li class="chapter" data-level="4.1" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#les-données-2"><i class="fa fa-check"></i><b>4.1</b> Les données</a></li>
+<li class="chapter" data-level="4.2" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#visualisation-boxplots-2"><i class="fa fa-check"></i><b>4.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="4.3" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#détection-des-observations-aberrantes-extrêmes-2"><i class="fa fa-check"></i><b>4.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="4.4" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#lanova-2"><i class="fa fa-check"></i><b>4.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-1-1ère-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="4.4.2" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-2-2è-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="4.4.3" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-3-3è-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="4.4.4" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#séance-4-4è-semaine-de-mesure-2"><i class="fa fa-check"></i><b>4.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#évolution-du-nombre-de-feuilles-avec-1-à-5-trous-au-cours-du-temps"><i class="fa fa-check"></i><b>4.5</b> Évolution du Nombre de feuilles avec 1 à 5 trous au cours du temps</a><ul>
+<li class="chapter" data-level="4.5.1" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#sommaire-2"><i class="fa fa-check"></i><b>4.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="4.5.2" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#visualisation-2"><i class="fa fa-check"></i><b>4.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="4.5.3" data-path="perforation-1-à-5-trous.html"><a href="perforation-1-à-5-trous.html#effet-du-temps-2"><i class="fa fa-check"></i><b>4.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html"><i class="fa fa-check"></i><b>5</b> Perforation, plus de 6 trous</a><ul>
+<li class="chapter" data-level="5.1" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#les-données-3"><i class="fa fa-check"></i><b>5.1</b> Les données</a></li>
+<li class="chapter" data-level="5.2" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#visualisation-boxplots-3"><i class="fa fa-check"></i><b>5.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="5.3" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#détection-des-observations-aberrantes-extrêmes-3"><i class="fa fa-check"></i><b>5.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="5.4" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#lanova-3"><i class="fa fa-check"></i><b>5.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="5.4.1" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-1-1ère-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="5.4.2" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-2-2è-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="5.4.3" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-3-3è-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="5.4.4" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#séance-4-4è-semaine-de-mesure-3"><i class="fa fa-check"></i><b>5.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#évolution-du-nombre-de-feuilles-avec-plus-de-6-trous-au-cours-du-temps"><i class="fa fa-check"></i><b>5.5</b> Évolution du Nombre de feuilles avec plus de 6 trous au cours du temps</a><ul>
+<li class="chapter" data-level="5.5.1" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#sommaire-3"><i class="fa fa-check"></i><b>5.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="5.5.2" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#visualisation-3"><i class="fa fa-check"></i><b>5.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="5.5.3" data-path="perforation-plus-de-6-trous.html"><a href="perforation-plus-de-6-trous.html#effet-du-temps-3"><i class="fa fa-check"></i><b>5.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html"><i class="fa fa-check"></i><b>6</b> Jaunissement des feuilles</a><ul>
+<li class="chapter" data-level="6.1" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#les-données-4"><i class="fa fa-check"></i><b>6.1</b> Les données</a></li>
+<li class="chapter" data-level="6.2" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#visualisation-boxplots-4"><i class="fa fa-check"></i><b>6.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="6.3" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#détection-des-observations-aberrantes-extrêmes-4"><i class="fa fa-check"></i><b>6.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="6.4" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#lanova-4"><i class="fa fa-check"></i><b>6.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="6.4.1" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-1-1ère-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="6.4.2" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-2-2è-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="6.4.3" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-3-3è-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="6.4.4" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#séance-4-4è-semaine-de-mesure-4"><i class="fa fa-check"></i><b>6.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="6.5" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#évolution-du-nombre-de-feuilles-jaunies-au-cours-du-temps"><i class="fa fa-check"></i><b>6.5</b> Évolution du Nombre de feuilles jaunies au cours du temps</a><ul>
+<li class="chapter" data-level="6.5.1" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#sommaire-4"><i class="fa fa-check"></i><b>6.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="6.5.2" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#visualisation-4"><i class="fa fa-check"></i><b>6.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="6.5.3" data-path="jaunissement-des-feuilles.html"><a href="jaunissement-des-feuilles.html#effet-du-temps-4"><i class="fa fa-check"></i><b>6.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html"><i class="fa fa-check"></i><b>7</b> Jaunissement et perforation</a><ul>
+<li class="chapter" data-level="7.1" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#les-données-5"><i class="fa fa-check"></i><b>7.1</b> Les données</a></li>
+<li class="chapter" data-level="7.2" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#visualisation-boxplots-5"><i class="fa fa-check"></i><b>7.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="7.3" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#détection-des-observations-aberrantes-extrêmes-5"><i class="fa fa-check"></i><b>7.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="7.4" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#lanova-5"><i class="fa fa-check"></i><b>7.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="7.4.1" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-1-1ère-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.1</b> Séance 1 (1ère semaine de mesure)</a></li>
+<li class="chapter" data-level="7.4.2" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-2-2è-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.2</b> Séance 2 (2è semaine de mesure)</a></li>
+<li class="chapter" data-level="7.4.3" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-3-3è-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.3</b> Séance 3 (3è semaine de mesure)</a></li>
+<li class="chapter" data-level="7.4.4" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#séance-4-4è-semaine-de-mesure-5"><i class="fa fa-check"></i><b>7.4.4</b> Séance 4 (4è semaine de mesure)</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#évolution-du-nombre-de-feuilles-jaunies-et-perforées-au-cours-du-temps"><i class="fa fa-check"></i><b>7.5</b> Évolution du Nombre de feuilles jaunies et perforées au cours du temps</a><ul>
+<li class="chapter" data-level="7.5.1" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#sommaire-5"><i class="fa fa-check"></i><b>7.5.1</b> Sommaire</a></li>
+<li class="chapter" data-level="7.5.2" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#visualisation-5"><i class="fa fa-check"></i><b>7.5.2</b> Visualisation</a></li>
+<li class="chapter" data-level="7.5.3" data-path="jaunissement-et-perforation.html"><a href="jaunissement-et-perforation.html#effet-du-temps-5"><i class="fa fa-check"></i><b>7.5.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html"><i class="fa fa-check"></i><b>8</b> Hauteur des plants</a><ul>
+<li class="chapter" data-level="8.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#les-données-6"><i class="fa fa-check"></i><b>8.1</b> Les données</a></li>
+<li class="chapter" data-level="8.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#visualisation-boxplots-6"><i class="fa fa-check"></i><b>8.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="8.3" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#détection-des-valeurs-aberrantes-extrêmes"><i class="fa fa-check"></i><b>8.3</b> Détection des valeurs aberrantes extrêmes</a></li>
+<li class="chapter" data-level="8.4" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#conditions-de-lanova"><i class="fa fa-check"></i><b>8.4</b> Conditions de l’ANOVA</a><ul>
+<li class="chapter" data-level="8.4.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#normalité"><i class="fa fa-check"></i><b>8.4.1</b> Normalité</a></li>
+<li class="chapter" data-level="8.4.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#homogénéité-des-variances"><i class="fa fa-check"></i><b>8.4.2</b> Homogénéité des variances</a></li>
+</ul></li>
+<li class="chapter" data-level="8.5" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#anovas"><i class="fa fa-check"></i><b>8.5</b> ANOVAs</a><ul>
+<li class="chapter" data-level="8.5.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-1"><i class="fa fa-check"></i><b>8.5.1</b> Semaine 1</a></li>
+<li class="chapter" data-level="8.5.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-2"><i class="fa fa-check"></i><b>8.5.2</b> Semaine 2</a></li>
+<li class="chapter" data-level="8.5.3" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-3"><i class="fa fa-check"></i><b>8.5.3</b> Semaine 3</a></li>
+<li class="chapter" data-level="8.5.4" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#semaine-4"><i class="fa fa-check"></i><b>8.5.4</b> Semaine 4</a></li>
+</ul></li>
+<li class="chapter" data-level="8.6" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#évolution-des-hauteurs-de-plants-au-cours-du-temps"><i class="fa fa-check"></i><b>8.6</b> Évolution des Hauteurs de plants au cours du temps</a><ul>
+<li class="chapter" data-level="8.6.1" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#sommaire-6"><i class="fa fa-check"></i><b>8.6.1</b> Sommaire</a></li>
+<li class="chapter" data-level="8.6.2" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#visualisation-6"><i class="fa fa-check"></i><b>8.6.2</b> Visualisation</a></li>
+<li class="chapter" data-level="8.6.3" data-path="hauteur-des-plants.html"><a href="hauteur-des-plants.html#effet-du-temps-6"><i class="fa fa-check"></i><b>8.6.3</b> Effet du temps</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html"><i class="fa fa-check"></i><b>9</b> Nombre de fruits récoltés</a><ul>
+<li class="chapter" data-level="9.1" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#les-données-7"><i class="fa fa-check"></i><b>9.1</b> Les données</a></li>
+<li class="chapter" data-level="9.2" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#visualisation-boxplots-7"><i class="fa fa-check"></i><b>9.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="9.3" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#détection-des-observations-aberrantes-extrêmes-6"><i class="fa fa-check"></i><b>9.3</b> Détection des observations aberrantes extrêmes</a></li>
+<li class="chapter" data-level="9.4" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#lanova-6"><i class="fa fa-check"></i><b>9.4</b> L’ANOVA</a><ul>
+<li class="chapter" data-level="9.4.1" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#le-modèle-chi-2"><i class="fa fa-check"></i><b>9.4.1</b> Le modèle chi-2</a></li>
+<li class="chapter" data-level="9.4.2" data-path="nombre-de-fruits-récoltés.html"><a href="nombre-de-fruits-récoltés.html#comparaisons-par-paires-28"><i class="fa fa-check"></i><b>9.4.2</b> Comparaisons par paires</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="rendement-tomate.html"><a href="rendement-tomate.html"><i class="fa fa-check"></i><b>10</b> Rendement tomate</a><ul>
+<li class="chapter" data-level="10.1" data-path="rendement-tomate.html"><a href="rendement-tomate.html#les-données-8"><i class="fa fa-check"></i><b>10.1</b> Les données</a></li>
+<li class="chapter" data-level="10.2" data-path="rendement-tomate.html"><a href="rendement-tomate.html#visualisation-boxplots-8"><i class="fa fa-check"></i><b>10.2</b> Visualisation boxplots</a></li>
+<li class="chapter" data-level="10.3" data-path="rendement-tomate.html"><a href="rendement-tomate.html#détection-des-valeurs-aberrantes-extrêmes-1"><i class="fa fa-check"></i><b>10.3</b> Détection des valeurs aberrantes extrêmes</a></li>
+<li class="chapter" data-level="10.4" data-path="rendement-tomate.html"><a href="rendement-tomate.html#conditions-de-lanova-1"><i class="fa fa-check"></i><b>10.4</b> Conditions de l’ANOVA</a><ul>
+<li class="chapter" data-level="10.4.1" data-path="rendement-tomate.html"><a href="rendement-tomate.html#normalité-1"><i class="fa fa-check"></i><b>10.4.1</b> Normalité</a></li>
+<li class="chapter" data-level="10.4.2" data-path="rendement-tomate.html"><a href="rendement-tomate.html#homogénéité-des-variances-1"><i class="fa fa-check"></i><b>10.4.2</b> Homogénéité des variances</a></li>
+</ul></li>
+<li class="chapter" data-level="10.5" data-path="rendement-tomate.html"><a href="rendement-tomate.html#anova"><i class="fa fa-check"></i><b>10.5</b> ANOVA</a><ul>
+<li class="chapter" data-level="10.5.1" data-path="rendement-tomate.html"><a href="rendement-tomate.html#le-modèle-28"><i class="fa fa-check"></i><b>10.5.1</b> Le modèle</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Exploration de données</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="references" class="section level1 unnumbered">
+<h1>References</h1>
+
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="rendement-tomate.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["Kouassi_2021_Controle_Insectes_Tomate.pdf", "Kouassi_2021_Controle_Insectes_Tomate.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

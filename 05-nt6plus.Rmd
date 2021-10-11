@@ -14,8 +14,9 @@ library("agricolae")
 library("car")
 library("rstatix")
 library("Rmisc")
-library("tidyverse")
 library("emmeans")
+library("multcomp")
+library("tidyverse")
 ```
 
 ## Les données
@@ -23,22 +24,13 @@ library("emmeans")
 ```{r message = FALSE, warning = FALSE}
 df <- read_csv("data/kam.csv")
 df <- df %>% 
-  mutate(id = rep(1:8, 4), .before = 1, seance = factor(seance),
-         methode = factor(methode, levels = c("Temoin", "Filet-anti-insectes", "Lutte-mecanique", "Cigogne-50-EC")), 
-         bloc = factor(bloc)) %>% 
-  select(id, seance, bloc, methode, nt6p) %>% 
-  mutate(id = factor(id))
+  mutate(id = rep(1:8, 4), .before = 1, seance = factor(seance), 
+         methode = factor(methode, levels = c("Temoin", "Filet-anti-insectes",
+                                              "Lutte-mecanique", "Cigogne-50-EC"))) %>% 
+  select(id, seance, bloc, methode, nt6p)
 ```
 
-Le tableau est déjà structuré en format long en Excel. J'ai ajouté un identifiant (`id`) pour les échantillons des seances.
-
-Afficher quelques lignes aléatoires par methode pour visualiser le dataframe :
-
-```{r message = FALSE, warning = FALSE}
-set.seed(154)
-df %>% sample_n_by(seance, methode, size = 1)
-```
-
+Le tableau est déjà structuré en format long en Excel. J'ai ajouté un identifiant (`id`) pour les échantillons des semaines.
 
 ## Visualisation boxplots
 
@@ -47,7 +39,6 @@ bxp <- ggplot(df, aes(x = methode, y = nt6p, fill = methode)) +
   geom_boxplot() +
   facet_grid(seance ~ .) +
   ylab("Nombre de feuilles avec plus de 6 trous") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
   theme_bw()
 bxp
 ```
@@ -63,7 +54,7 @@ df_out <- df %>%
 df_out
 ```
 
-=> Pas d'observation aberrante extrême pour toutes les seances.
+=> Pas d'observation aberrante extrême pour toutes les semaines.
 
 
 ## L'ANOVA
@@ -74,23 +65,28 @@ df_out
 
 ```{r}
 df1 <- df %>% filter(seance == "Semaine 1")
-
 lm1 <- glm(nt6p ~ methode, data = df1, family = poisson)
 Anova(lm1)
 ```
 
-La p-value < 0.05 => différence significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous, à la Semaine 1.
+La p-value < 0.05 => différence significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous, la Semaine 1.
 
 
 #### Comparaisons par paires
 
 ```{r}
 pwc_lm1 = emmeans(lm1, ~ methode)
-(cm1 <- pairs(pwc_lm1) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+cm1 <- pairs(pwc_lm1) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm1 %>% select(no_contrast, contrast, p.value)
 ```
 
-=> Pas de contrastes différents déterminés. Selon [**ce poste consulté en ligne**](https://help.xlstat.com/s/article/comment-interpreter-des-resultats-contradictoires-entre-une-anova-et-des-tests-de-comparaisons-multiples?language=fr), ce genre de situations peuvent se présenter lorsque les échantillons (groupes) sont de petite taille. La puissance statistique du test de comparaisons multiples n’est donc pas assez élevée pour détecter des différences significatives. En général, il faut se fier aux résultats des comparaisons multiples, sauf si c'est le test *protected Fisher LSD* qui est utilisé.
+=> Pas de contrastes différents déterminés en contradiction avec le test du Chi-2. 
+
+Selon [**ce poste consulté en ligne**](https://help.xlstat.com/s/article/comment-interpreter-des-resultats-contradictoires-entre-une-anova-et-des-tests-de-comparaisons-multiples?language=fr), ce genre de situations peuvent se présenter lorsque les échantillons (groupes) sont de petite taille. La puissance statistique du test de comparaisons multiples n’est donc pas assez élevée pour détecter des différences significatives. En général, il faut se fier aux résultats des comparaisons multiples.
+
+Ici particulièrement, une des conditions d'application du Chi-2, à savoir l'absence de zéro n'est pas remplie. La lutte mécanique compte 0 perforations pour les 2 blocs.
 
 => La méthode de Tukey `pairwise_t_test()` ne converge pas : `Error in t.test.default(x = numeric(0), y = numeric(0), paired = TRUE) : not enough 'x' observations`.
 
@@ -99,28 +95,19 @@ plot(pairs(pwc_lm1))
 ```
 
 ```{r}
-(cm1_moy <- summarySE(df1, 
-                     measurevar = "nt6p", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nt6p))
+(cm1_moy <- summarySE(df1, measurevar = "nt6p", groupvars = "methode") %>% 
+   data.table::setorder(nt6p) %>% 
+   mutate(groups = cld(pwc_lm1, alpha = 0.05, Letters = LETTERS)$.group))
 ```
-
-```{r}
-(cm1_moy <- cm1_moy %>% mutate(groups = c("a", "a", "a", "a")))
-```
-
-=> Du moment où cette méthode ici est faite à la main, très facile de se tromper. Toujours se référer à la figure et au tableau des contrastes.
 
 Sous forme graphique ...
 
 ```{r fp6p.1-barplot}
 ggplot(data = cm1_moy, mapping = aes(x = methode, y = nt6p)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
-  #geom_errorbar(aes(ymin = nt6p - ci, ymax = nt6p + ci), width =.1) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  #ylim(0, 13) +
-  xlab("Méthodes") + ylab("Nombre de feuilles avec plus de 6 trous") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
+  ylim(0, 4) +
+  xlab("Méthode") + ylab("Nombre de feuilles avec plus de 6 trous") +
   theme_bw()
 ```
 
@@ -131,9 +118,6 @@ ggplot(data = cm1_moy, mapping = aes(x = methode, y = nt6p)) +
 
 ```{r}
 df2 <- df %>% filter(seance == "Semaine 2")
-
-(df2_out <- df2 %>%
-  identify_outliers(nt6p))
 ```
 
 
@@ -142,15 +126,17 @@ lm2 <- glm(nt6p ~ methode, data = df2, family = poisson)
 Anova(lm2)
 ```
 
-La p-value < 0.01 => différence très significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous, à la Semaine 2.
+La p-value < 0.01 => différence très significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous, la Semaine 2.
 
 
 #### Comparaisons par paires
 
 ```{r}
 pwc_lm2 = emmeans(lm2, ~ methode)
-(cm2 <- pairs(pwc_lm2) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+cm2 <- pairs(pwc_lm2) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm2 %>% select(no_contrast, contrast, p.value)
 ```
 
 Cette classification établie une différence significative entre les effets pour les contrastes 3, 4 et 6.
@@ -159,29 +145,22 @@ Cette classification établie une différence significative entre les effets pou
 plot(pairs(pwc_lm2))
 ```
 
-Moyennes et cart-types et ajout d'une colonne à la main pour constituer les groupes.
 
 ```{r}
-(cm2_moy <- summarySE(df2, 
-                     measurevar = "nt6p", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nt6p))
+(cm2_moy <- summarySE(df2, measurevar = "nt6p", groupvars = "methode") %>% 
+   data.table::setorder(nt6p) %>% 
+   mutate(groups = cld(pwc_lm2, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
-```{r}
-(cm2_moy <- cm2_moy %>% mutate(groups = c("a", "ab", "bc", "c")))
-```
 
 Sous forme graphique ...
 
 ```{r fp6p.2-barplot}
 ggplot(data = cm2_moy, mapping = aes(x = methode, y = nt6p)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
-  #geom_errorbar(aes(ymin = nt6p - ci, ymax = nt6p + ci), width =.1) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  #ylim(0, 13) +
-  xlab("Méthodes") + ylab("Nombre de feuilles avec plus de 6 trous") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
+  ylim(0, 16) +
+  xlab("Méthode") + ylab("Nombre de feuilles avec plus de 6 trous") +
   theme_bw()
 ```
 
@@ -192,27 +171,25 @@ ggplot(data = cm2_moy, mapping = aes(x = methode, y = nt6p)) +
 
 ```{r}
 df3 <- df %>% filter(seance == "Semaine 3")
-
-(df3_out <- df3 %>%
-  identify_outliers(nt6p))
 ```
 
-=> Pas d'observation supposée extrême.
 
 ```{r}
 lm3 <- glm(nt6p ~ methode, data = df3, family = poisson)
 Anova(lm3)
 ```
 
-La p-value < 0.01 => différence très significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous à la Semaine 3.
+La p-value < 0.01 => différence très significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous la Semaine 3.
 
 
 #### Comparaisons par paires
 
 ```{r}
 pwc_lm3 = emmeans(lm3, ~ methode)
-(cm3 <- pairs(pwc_lm3) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+cm3 <- pairs(pwc_lm3) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm3 %>% select(no_contrast, contrast, p.value)
 ```
 
 Différence significative pour les contrastes 2 et 3.
@@ -221,29 +198,22 @@ Différence significative pour les contrastes 2 et 3.
 plot(pairs(pwc_lm3))
 ```
 
-Moyennes et cart-type et ajout d'une colonne à la main pour constituer les groupes.
 
 ```{r}
-(cm3_moy <- summarySE(df3, 
-                     measurevar = "nt6p", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nt6p))
+(cm3_moy <- summarySE(df3, measurevar = "nt6p", groupvars = "methode") %>% 
+   data.table::setorder(nt6p) %>% 
+   mutate(groups = cld(pwc_lm3, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
-```{r}
-(cm3_moy <- cm3_moy %>% mutate(groups = c("a", "bc", "bc", "c")))
-```
 
 Sous forme graphique ...
 
 ```{r fp6p.3-barplot}
 ggplot(data = cm3_moy, mapping = aes(x = methode, y = nt6p)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
-  #geom_errorbar(aes(ymin = nt6p - ci, ymax = nt6p + ci), width =.1) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  #ylim(0, 13) +
-  xlab("Méthodes") + ylab("Nombre de feuilles avec plus de 6 trous") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
+  ylim(0, 15) +
+  xlab("Méthode") + ylab("Nombre de feuilles avec plus de 6 trous") +
   theme_bw()
 ```
 
@@ -255,27 +225,25 @@ ggplot(data = cm3_moy, mapping = aes(x = methode, y = nt6p)) +
 
 ```{r}
 df4 <- df %>% filter(seance == "Semaine 4")
-
-(df4_out <- df4 %>%
-  identify_outliers(nt6p))
 ```
 
-=> Pas d'observation supposée aberrante.
 
 ```{r}
 lm4 <- glm(nt6p ~ methode, data = df4, family = poisson)
 Anova(lm4)
 ```
 
-La p-value < 0.05 => différence significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous à la Semaine 4.
+La p-value < 0.05 => différence significative entre les effets de certaines méthodes de contrôle sur le Nombre de feuilles avec plus de 6 trous la Semaine 4.
 
 
 #### Comparaisons par paires
 
 ```{r}
 pwc_lm4 = emmeans(lm4, ~ methode)
-(cm4 <- pairs(pwc_lm4) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+cm4 <- pairs(pwc_lm4) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm4 %>% select(no_contrast, contrast, p.value)
 ```
 
 Pourtant pas de contrastes différents identifiés. => se fier aux résultats des comparaisons multiples ...
@@ -287,18 +255,13 @@ Pourtant pas de contrastes différents identifiés. => se fier aux résultats de
 plot(pairs(pwc_lm4))
 ```
 
-Moyennes et cart-type et ajout d'une colonne à la main pour constituer les groupes (ici on attribue la même lettre).
 
 ```{r}
-(cm4_moy <- summarySE(df4, 
-                     measurevar = "nt6p", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nt6p))
+(cm4_moy <- summarySE(df4, measurevar = "nt6p", groupvars = "methode") %>% 
+   data.table::setorder(nt6p) %>% 
+   mutate(groups = cld(pwc_lm4, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
-```{r}
-(cm4_moy <- cm4_moy %>% mutate(groups = c("a", "a", "a", "a")))
-```
 
 Sous forme graphique ...
 
@@ -306,23 +269,19 @@ Sous forme graphique ...
 ggplot(data = cm4_moy, mapping = aes(x = methode, y = nt6p)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  xlab("Méthodes") + ylab("Nombre de feuilles avec plus de 6 trous") +
+  ylim(0, 9) +
+  xlab("Méthode") + ylab("Nombre de feuilles avec plus de 6 trous") +
   theme_bw()
 ```
 
+On obtient des groupes différents seulement en aumentant alpha à 20%.
 
-
-## Évolution du Nombre de feuilles avec plus de 6 trous selon la méthode au cours du temps
+## Évolution du Nombre de feuilles avec plus de 6 trous au cours du temps
 
 ### Sommaire
 
 ```{r}
-df_ic <- summarySE(df, 
-                   measurevar = "nt6p", 
-                   groupvars = c("seance", "methode"),
-                   na.rm = TRUE)
-
-df_ic
+(df_ic <- summarySE(df, measurevar = "nt6p", groupvars = c("seance", "methode"), na.rm = TRUE))
 ```
 
 
@@ -340,10 +299,10 @@ Tendance difficile à exploiter.
 
 Nous savons par les analyses pour chaque seance plus haut, que
 
-- Semaine 1 : p-value < 0.05 mais pas de contrastes différents !
+- Semaine 1 : p-value < 0.05 mais pas de contrastes différents, présence de zéro
 - Semaine 2 : différences d'effet
 - Semaine 3 : différences d'effet
-- Semaine 4 : p-value < 0.05 mais pas de contrastes différents !
+- Semaine 4 : p-value < 0.05 mais pas de contrastes différents, sauf à partir de alpha = 0.2.
 
 
 Puisque les données ne répondent pas aux conditions pour évaluer les effets des méthodes au cours du temps, on négligera l'effet des méthodes pour évaluer globalement l'effet du temps.
@@ -378,56 +337,46 @@ df_out
 ```
 
 
-#### Homogénéité des variances et ANOVA, facteur temps
+#### Le modèle ANOVA, facteur temps
 
-Les autres conditions ont déjà été vérifiées.
-
-```{r message = FALSE, warning = FALSE}
-lm <- anova_test(data = df,
-                 dv = nt6p,        # dependant variable, num
-                 wid = id,        # identificateur de cas/échantillon (facteur)
-                 within = seance) # facteur de groupement intra-sujets
-
-get_anova_table(lm)
+```{r}
+lm <- glm(nt6p ~ seance, data = df, family = poisson)
+Anova(lm)
 ```
-
-=> différence entre certaines semaines.
 
 #### Comparaisons par paires, facteur temps
 
 ```{r}
 lmo <- lm(nt6p ~ seance, data = df)
-pwc_lmo = emmeans::emmeans(lmo, ~ seance)
-(cmo <- pairs(pwc_lmo) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+pwc_lmo = emmeans(lmo, ~ seance)
+cmo <- pairs(pwc_lmo) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cmo %>% select(no_contrast, contrast, p.value)
 ```
 
-=> Contrate 1 pour cette méthode.
+=> différence contraste 1. 
+
 
 ```{r}
-tph <- df %>%
-  pairwise_t_test(nt6p ~ seance, 
-                  paired = TRUE,
-                  p.adjust.method = "bonferroni")
-
-tph %>% 
-  select(group1, group2, p, p.adj, p.adj.signif)
+(cmo_moy <- summarySE(df, measurevar = "nt6p", groupvars = "seance") %>% 
+   data.table::setorder(nt6p) %>% 
+   mutate(groups = cld(pwc_lmo, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
-=> Contraste 2 pour cette méthode.
+Sous forme graphique ...
 
-=> C'est la p-value qui nous intéresse et elle est < 0.05 pour un contrate.
-
-#### Boxplots avec p-values
-
-```{r fp6p.-temps-pwc, message = FALSE, warning = FALSE}
-tph <- tph %>% add_xy_position(x = "seance")
-
-ggboxplot(df, x = "seance", y = "nt6p") + 
-  stat_pvalue_manual(tph) +
-  labs(subtitle = get_test_label(lm, detailed = TRUE), 
-       caption = get_pwc_label(tph))
+```{r fat-barplot}
+ggplot(data = cmo_moy, mapping = aes(x = seance, y = nt6p)) +
+  geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
+  geom_text(aes(label = groups), vjust = -0.5, size = 4) +
+  ylim(0, 10) +
+  xlab("Séance") + ylab("Nombre de feuilles avec plus de 6 trous") +
+  theme_bw()
 ```
+
+Ici, ce sont les colonnes `seance`, `nt6p` et `groups` que les étudiants peuvent exploiter pour reproduire ce même graphique en Excel. 
+
 
 
 

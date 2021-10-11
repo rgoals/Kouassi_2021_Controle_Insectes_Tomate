@@ -1,14 +1,165 @@
 
-# Rendement
+# Rendement tomate
 
-En attente des données de Diambla Bi Vanié Esai Monami 
+Évaluer si les rendements diffèrent significativement selon la méthode de contrôle appliquée.
 
-## ab
+Jeu de données `diam.csv`.
 
-## cd
+> **La variable dépendante ici est quantitative, donc traitée comme la hauteur des plants.**
 
-## ef
 
+```{r message=FALSE, warning=FALSE, echo=FALSE}
+library("ggpubr")
+library("agricolae")
+library("car")
+library("rstatix")
+library("Rmisc")
+library("emmeans")
+library("multcomp")
+library("tidyverse")
+```
+
+## Les données
+
+```{r message = FALSE, warning = FALSE}
+df <- read_csv("data/diam.csv")
+df <- df %>% 
+  mutate(id = 1:nrow(.), .before = 1, 
+         methode = factor(methode, levels = c("Temoin", "Filet-anti-insectes", 
+                                              "Lutte-mecanique", "Cigogne-50-EC"))) %>% 
+  select(id, bloc, methode, rdt_tha)
+```
+
+
+## Visualisation boxplots
+
+```{r rdt-boxplot}
+bxp <- ggplot(df, aes(x = methode, y = rdt_tha)) +
+  geom_boxplot() +
+  ylab("Rendement (t/ha)") + xlab("Méthode") +
+  theme_bw()
+bxp
+```
+
+Il y a des variations notables d'une méthode à l'autre.
+
+## Détection des valeurs aberrantes extrêmes
+
+```{r}
+df_out <- df %>%
+  group_by(methode) %>%
+  identify_outliers(rdt_tha)
+df_out
+```
+
+=> Pas d'observation aberrante extrême.
+
+
+## Conditions de l'ANOVA
+
+### Normalité
+
+Si les données sont normalement distribuées, la p-value de Shapiro-Wilk doit être supérieure à 0,05 pour chaque méthode.
+
+```{r}
+df %>%
+  shapiro_test(rdt_tha)
+```
+
+=> Normalité OK. Visualisation avec le QQ-plot :
+
+```{r rdt-qqplot, message = FALSE, warning = FALSE}
+ggqqplot(df, "rdt_tha")
+```
+
+Tous les points se situent approximativement le long de la ligne de référence.
+
+
+### Homogénéité des variances
+
+```{r}
+df %>%
+   levene_test(rdt_tha ~ methode)
+```
+
+=> Toutes les valeurs p sont < 0.05 => les variances ne sont pas homogènes ! On verra de plus près avec les résidus de l'ANOVA.
+
+## ANOVA
+
+### Le modèle
+
+```{r}
+lm <- lm(rdt_tha ~ methode, data = df)
+Anova(lm)
+```
+
+La p-value > 0.05 => pas de différence significative entre les effets des méthodes de contrôle sur le Rendement.
+
+```{r}
+shapiro_test(residuals(lm))
+```
+
+=> Normalité OK.
+
+```{r}
+leveneTest(residuals(lm) ~ df$methode)
+```
+
+=> Variances non homogènes
+
+=> Alternative 1 : ANOVA de Welch
+
+```{r}
+df %>% welch_anova_test(rdt_tha ~ methode)
+```
+
+=> Alternative 2 : Kruskal-Wallis
+
+```{r}
+df %>% kruskal_test(rdt_tha ~ methode)
+```
+
+=> Différence non significative entre les effets des différentes méthodes de contrôle également avec ces test alternatifs.
+
+
+#### Comparaisons par paires
+
+=> méthode non paramétrique
+
+```{r}
+df %>% 
+  dunn_test(rdt_tha ~ methode, p.adjust.method = "bonferroni") %>% 
+  select(group1, group2, p, p.adj, p.adj.signif)# %>% 
+  #filter(p.adj.signif != "ns")
+```
+
+Supposant les conditions de l'ANOVA valide : (Student - Newman - Keuls). Mais ce n'est pas le cas.
+
+```{r}
+(cm <- (SNK.test(lm, "methode", group = TRUE))$groups %>% 
+  mutate(methode = rownames(.)))
+```
+
+Moyennes et écart-types, avec les lettres (groupes)
+
+```{r}
+(cm_moy <- summarySE(df, measurevar = "rdt_tha", groupvars = "methode") %>% 
+  data.table::setorder(-rdt_tha)) %>% 
+  mutate(groups = cm$groups)
+```
+
+Figure pas forcément nécessaire.
+
+```{r rdt-barplot}
+ggplot(data = cm, mapping = aes(x = methode, y = rdt_tha)) +
+  geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.6) +
+  geom_text(aes(label = groups), vjust = -0.5, size = 4) +
+  ylim(0,5) +
+  xlab("Méthode") + ylab("Rendement (t/ha)") +
+  theme_bw()
+```
+
+Dans tous les cas, il n'y a pas de différence significative entre les effets des différentes méthodes de contrôle sur le rendement, avec ces données expérimentales.
 
 
 

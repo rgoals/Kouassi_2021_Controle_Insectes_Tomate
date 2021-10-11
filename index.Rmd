@@ -65,11 +65,14 @@ Collecte réalisée durant quatre semaines pour certaines variables.
 
 Colecte et organisation des données en Excel, figures en Excel.
 
-Test du Khi-2 avec ...
+Test du Khi-2 pour les décomptes avec ...
 
-ANOVA avec ....
+ANOVA pour les variables quantitatives continues avec ....
 
-Lorsque différence significative ... tests post-hoc de comparaisons multiples par paires avec ...
+Lorsque différence significative ... tests post-hoc de comparaisons multiples par paires avec :
+
+- fonction `emmeans()` du package du même nom, qui utilise la méthode de Tuckey, à la suite du Chi-2
+- SNK ou un équivalant non paramétrique pour la hauteur des plants et le rendement.
 
 
 ## Les librairies
@@ -84,8 +87,9 @@ library("agricolae") # SNK.test()
 library("car")       # levene_test()
 library("rstatix")   # identify_outliers()
 library("Rmisc")     # summarySE()
-library("tidyverse") # dplyr, ggplot2
 library("emmeans")   # emmeans()
+library("multcomp")  # cld()
+library("tidyverse") # dplyr, ggplot2
 ```
 
 Les chapitres suivant donnent les détails des analyses effectuées.
@@ -95,11 +99,11 @@ Les chapitres suivant donnent les détails des analyses effectuées.
 
 Koffi Amoin Marina
 
-> **Impacts des insectes ravageurs et croissance de la tomate (*Solanum lycopercicum* L.) sous différentes méthodes de contrôle au carré potager de l’UPGC - Korhogo**.
+> **Impacts des insectes ravageurs sur la tomate (*Solanum lycopercicum* L.) sous différentes méthodes de contrôle au carré potager de l’UPGC - Korhogo**.
 
 Diambla Bi Vanie Esai Monami
 
-> **Effet de différentes méthodes de contrôle des insectes ravageurs sur le rendement de la tomate (*Solanum lycopercicum* L.) au carré potager de l’UPGC - Korhogo**.
+> **Effet de différentes méthodes de contrôle des insectes ravageurs sur la croissance et le rendement de la tomate (*Solanum lycopercicum* L.) au carré potager de l’UPGC - Korhogo**.
 
 
 ## Quelques remarques
@@ -108,11 +112,6 @@ Il y a certainement trop de variables présentées avec le thème de Mme Koffi, 
 
 J'ai exploré les données sans ténir compte de pourquoi vous avez choisi de mesurer telle ou telle variable (beaucoup plus *défense des cultures*). Pour le nombre de trous dans les feuilles, j'ai regroupé les deux dernières catégories : 6 à 10 trous, et 10 trous et plus, en **6 trous et plus**. Il y avait trop de zéros ...
 
-
-J'attends toujours les données de M. Diambla. Entre-temps, je trouverai du temps pour revérifier les analyses. L'actualisation est automatique en ligne donc vous aurez toujours accès à la dernière version. Pour l'instant les étudiant, ne l'ont pas !
-
-
-Bien-à-vous.
 
 **ZC.**
 

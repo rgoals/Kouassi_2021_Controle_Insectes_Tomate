@@ -1,11 +1,11 @@
 
 # Feuilles perforées
 
-Évaluer si le nombre de feuilles ayant subi des attaques d'insectes, de type **perforation**, diffèrent significativement selon la méthode de contrôle appliquée.
+Évaluer si le nombre de feuilles ayant subi des attaques d'insectes de type **perforation**, diffèrent significativement selon la méthode de contrôle appliquée.
 
 Jeu de données `kam.csv` qui contient différentes mesures dont les **nombres de feuilles perforées**, comptés en 4 séances.
 
-On pourrait également évaluer si les différentes méthodes ont des intensités d'attaques de ce type, significativement différentes avec le temps. On comparera les effets des méthodes séance par séance, puis à l'aide d'une figure on appréciera s'il y a une évolution en fonction du temps.
+On pourrait également évaluer si les  intensités d'attaques de ce type, sont significativement différentes avec le temps. On comparera les effets des méthodes semaine par semaine, puis à l'aide d'une figure, on appréciera s'il y a une évolution en fonction du temps.
 
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
@@ -14,8 +14,9 @@ library("agricolae")
 library("car")
 library("rstatix")
 library("Rmisc")
-library("tidyverse")
 library("emmeans")
+library("multcomp")
+library("tidyverse")
 ```
 
 ## Les données
@@ -24,20 +25,12 @@ library("emmeans")
 df <- read_csv("data/kam.csv")
 df <- df %>% 
   mutate(id = rep(1:8, 4), .before = 1, seance = factor(seance),
-         methode = factor(methode, levels = c("Temoin", "Filet-anti-insectes", "Lutte-mecanique", "Cigogne-50-EC")), 
-         bloc = factor(bloc)) %>% 
-  select(id, seance, bloc, methode, nfp) %>% 
-  mutate(id = factor(id))
+         methode = factor(methode, levels = c("Temoin", "Filet-anti-insectes", 
+                                              "Lutte-mecanique", "Cigogne-50-EC"))) %>% 
+  select(id, seance, bloc, methode, nfp)
 ```
 
 Le tableau est déjà structuré en format long en Excel. J'ai ajouté un identifiant (`id`) pour les échantillons des seances.
-
-Afficher quelques lignes aléatoires par methode pour visualiser le dataframe :
-
-```{r message = FALSE, warning = FALSE}
-set.seed(124)
-df %>% sample_n_by(seance, methode, size = 1)
-```
 
 
 ## Visualisation boxplots
@@ -47,7 +40,6 @@ bxp <- ggplot(df, aes(x = methode, y = nfp, fill = methode)) +
   geom_boxplot() +
   facet_grid(seance ~ .) +
   ylab("Nombre de feuilles perforées") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
   theme_bw()
 bxp
 ```
@@ -74,56 +66,51 @@ df_out
 
 ```{r}
 df1 <- df %>% filter(seance == "Semaine 1")
-
 lm1 <- glm(nfp ~ methode, data = df1, family = poisson)
 Anova(lm1)
 ```
 
-La p-value < 0.05 => différence très significative entre les effets des méthodes de contrôle sur le nombre de feuilles perforées à la Semaine 1.
+La p-value < 0.01 => différence très significative entre les effets des méthodes de contrôle sur le nombre de feuilles perforées la Semaine 1.
 
 
 #### Comparaisons par paires
 
 ```{r}
 pwc_lm1 = emmeans(lm1, ~ methode)
-(cm1 <- pairs(pwc_lm1) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+cm1 <- pairs(pwc_lm1) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm1 %>% select(no_contrast, contrast, p.value)
 ```
 
-=> Bizard ! Pas de groupes différents selon l'ANOVA ...
+=> Bizard ! Pas de contrastes significativement différents selon la prédiction du test du Chi-carré (ANOVA).
 
 ```{r fp1-pwc}
 plot(pairs(pwc_lm1))
 ```
 
-Cette classification n'établie pas de différence significative entre les effets quand bien même le test du Khi-2 annonce des différences !. Certainement lié à l'amplitude de l'intervalle de confiance autour de certaines moyennes.
+Cette classification n'établie pas de différence significative entre les effets quand bien même le test du Khi-2 annonce des différences !. On obtient des différence qu'en diminuant le niveau de significatité alpha à 0.10.
+
+Moyennes et écart-types et ajout de la colonne des groupes.
 
 ```{r}
-(cm1_moy <- summarySE(df1, 
-                     measurevar = "nfp", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nfp))
+(cm1_moy <- summarySE(df1, measurevar = "nfp", groupvars = "methode") %>% 
+   data.table::setorder(nfp) %>% 
+   mutate(groups = cld(pwc_lm1, alpha = 0.10, Letters = LETTERS)$.group))
 ```
-
-```{r}
-(cm1_moy <- cm1_moy %>% mutate(groups = c("a", "a", "a", "a")))
-```
-
-=> Du moment où cette méthode ici est faite à la main, très facile de se tromper. Toujours se référer à la figure et au tableau des contrastes.
 
 Sous forme graphique ...
 
 ```{r fp1-barplot}
 ggplot(data = cm1_moy, mapping = aes(x = methode, y = nfp)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
-  #geom_errorbar(aes(ymin = nfp - ci, ymax = nfp + ci), width =.1) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  #ylim(0, 13) +
-  xlab("Méthodes") + ylab("Nombre de feuilles perforées") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
+  ylim(0, 7) +
+  xlab("Méthode") + ylab("Nombre de feuilles perforées") +
   theme_bw()
 ```
 
+**Colonnes `methode`, `nfp` et `groups` pour tracer ces histogrammes facilement en Excel.**
 
 ### Séance 2 (2è semaine de mesure)
 
@@ -131,26 +118,27 @@ ggplot(data = cm1_moy, mapping = aes(x = methode, y = nfp)) +
 
 ```{r}
 df2 <- df %>% filter(seance == "Semaine 2")
-
-(df2_out <- df2 %>%
-  identify_outliers(nfp))
+(df2_out <- df2 %>% identify_outliers(nfp))
 ```
 
+=> Pas d'observation supposée extrême.
 
 ```{r}
 lm2 <- glm(nfp ~ methode, data = df2, family = poisson)
 Anova(lm2)
 ```
 
-La p-value < 0.05 => différence très significative entre les effets des méthodes de contrôle sur le nombre de feuilles perforées à la Semaine 2.
+La p-value < 0.01 => différence très significative entre les effets des méthodes de contrôle sur le nombre de feuilles perforées la Semaine 2.
 
 
 #### Comparaisons par paires
 
 ```{r}
-pwc_lm2 = emmeans::emmeans(lm2, ~ methode)
-(cm2 <- pairs(pwc_lm2) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+pwc_lm2 = emmeans(lm2, ~ methode)
+cm2 <- pairs(pwc_lm2) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm2 %>% select(no_contrast, contrast, p.value)
 ```
 
 Cette classification établie une différence significative entre les effets pour les contrastes 4 et 6.
@@ -159,29 +147,23 @@ Cette classification établie une différence significative entre les effets pou
 plot(pairs(pwc_lm2))
 ```
 
-Moyennes et cart-types et ajout d'une colonne à la main pour constituer les groupes.
+Moyennes et cart-types et ajout de la colonne des groupes.
 
 ```{r}
-(cm2_moy <- summarySE(df2, 
-                     measurevar = "nfp", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nfp))
+(cm2_moy <- summarySE(df2, measurevar = "nfp", groupvars = "methode") %>% 
+   data.table::setorder(nfp) %>% 
+   mutate(groups = cld(pwc_lm2, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
-```{r}
-(cm2_moy <- cm2_moy %>% mutate(groups = c("a", "ab", "bc", "c")))
-```
 
 Sous forme graphique ...
 
 ```{r fp2-barplot}
 ggplot(data = cm2_moy, mapping = aes(x = methode, y = nfp)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
-  #geom_errorbar(aes(ymin = nfp - ci, ymax = nfp + ci), width =.1) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  #ylim(0, 13) +
-  xlab("Méthodes") + ylab("Nombre de feuilles perforées") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
+  ylim(0, 18) +
+  xlab("Méthode") + ylab("Nombre de feuilles perforées") +
   theme_bw()
 ```
 
@@ -192,27 +174,27 @@ ggplot(data = cm2_moy, mapping = aes(x = methode, y = nfp)) +
 
 ```{r}
 df3 <- df %>% filter(seance == "Semaine 3")
-
-(df3_out <- df3 %>%
-  identify_outliers(nfp))
+(df3_out <- df3 %>% identify_outliers(nfp))
 ```
 
-=> Une observation supposée extrême, mais je ne l'exclue pas.
+=> Pas d'observation supposée extrême.
 
 ```{r}
 lm3 <- glm(nfp ~ methode, data = df3, family = poisson)
 Anova(lm3)
 ```
 
-La p-value < 0.05 => différence très significative entre les effets des méthodes de contrôle sur le nombre de feuilles perforées à la Semaine 3.
+La p-value < 0.01 => différence très significative entre les effets des méthodes de contrôle sur le nombre de feuilles perforées la Semaine 3.
 
 
 #### Comparaisons par paires
 
 ```{r}
 pwc_lm3 = emmeans(lm3, ~ methode)
-(cm3 <- pairs(pwc_lm3) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+cm3 <- pairs(pwc_lm3) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm3 %>% select(no_contrast, contrast, p.value)
 ```
 
 Cette classification établie une différence significative entre les effets des autres méthodes et le Témoin (contrastes 1, 2 et 3).
@@ -221,32 +203,25 @@ Cette classification établie une différence significative entre les effets des
 plot(pairs(pwc_lm3))
 ```
 
-Moyennes et cart-type et ajout d'une colonne à la main pour constituer les groupes.
+Moyennes et cart-types et ajout de la colonne des groupes.
 
 ```{r}
-(cm3_moy <- summarySE(df3, 
-                     measurevar = "nfp", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nfp))
+(cm3_moy <- summarySE(df3, measurevar = "nfp", groupvars = "methode") %>% 
+   data.table::setorder(nfp) %>% 
+   mutate(groups = cld(pwc_lm3, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
-```{r}
-(cm3_moy <- cm3_moy %>% mutate(groups = c("a", "bc", "bc", "c")))
-```
 
 Sous forme graphique ...
 
 ```{r fp3-barplot}
 ggplot(data = cm3_moy, mapping = aes(x = methode, y = nfp)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
-  #geom_errorbar(aes(ymin = nfp - ci, ymax = nfp + ci), width =.1) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  #ylim(0, 13) +
-  xlab("Méthodes") + ylab("Nombre de feuilles perforées") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
+  ylim(0, 18) +
+  xlab("Méthode") + ylab("Nombre de feuilles perforées") +
   theme_bw()
 ```
-
 
 
 ### Séance 4 (4è semaine de mesure)
@@ -255,74 +230,63 @@ ggplot(data = cm3_moy, mapping = aes(x = methode, y = nfp)) +
 
 ```{r}
 df4 <- df %>% filter(seance == "Semaine 4")
-
-(df4_out <- df4 %>%
-  identify_outliers(nfp))
+(df4_out <- df4 %>% identify_outliers(nfp))
 ```
 
-=> Une observation supposée aberrante seulement, je ne l'exclue pas.
+=> Pas d'observation supposée extrême.
 
 ```{r}
-lm4 <- glm(nfp ~ methode, data = df4, family = poisson)
+lm4 <- glm(nfp ~ methode, data = df4, family = quasipoisson)
 Anova(lm4)
 ```
 
-La p-value > 0.05 => pas de différence significative entre les effets des méthodes de contrôle sur le nombre de feuilles perforées à la Semaine 4.
+La p-value < 0.01 (quasi-Poisson) => différence très significative dans ce cas entre les effets des méthodes de contrôle sur le nombre de feuilles perforées la Semaine 4.
 
 
 #### Comparaisons par paires
 
 ```{r}
 pwc_lm4 = emmeans::emmeans(lm4, ~ methode)
-(cm4 <- pairs(pwc_lm4) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+cm4 <- pairs(pwc_lm4) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cm4 %>% select(no_contrast, contrast, p.value)
 ```
 
-Pas de différence significative pour tous les contrastes. 
+=> Différences significatives pour les contrastes 3, 5 et 6. 
 
 ```{r}
 plot(pairs(pwc_lm4))
 ```
 
-Moyennes et cart-type et ajout d'une colonne à la main pour constituer les groupes (ici on attribue la même lettre).
+Moyennes et cart-types et ajout de la colonne des groupes.
 
 ```{r}
-(cm4_moy <- summarySE(df4, 
-                     measurevar = "nfp", 
-                     groupvars = "methode") %>% 
-   data.table::setorder(-nfp))
+(cm4_moy <- summarySE(df4, measurevar = "nfp", groupvars = "methode") %>% 
+   data.table::setorder(nfp) %>% 
+   mutate(groups = cld(pwc_lm4, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
-```{r}
-(cm4_moy <- cm4_moy %>% mutate(groups = c("a", "a", "a", "a")))
-```
 
 Sous forme graphique ...
 
 ```{r fp4-barplot}
 ggplot(data = cm4_moy, mapping = aes(x = methode, y = nfp)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
-  #geom_errorbar(aes(ymin = nfp - ci, ymax = nfp + ci), width =.1) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  #ylim(0, 13) +
-  xlab("Méthodes") + ylab("Nombre de feuilles perforées") +
-  #theme(axis.text.x = element_text(angle = 45, color = "black", vjust = 1, hjust = 1)) +
+  ylim(0, 12) +
+  xlab("Méthode") + ylab("Nombre de feuilles perforées") +
   theme_bw()
 ```
 
 
 
-## Évolution du nombre de feuilles perforées selon la méthode au cours du temps
+## Évolution du nombre de feuilles perforées au cours du temps
 
 ### Sommaire
 
 ```{r}
-df_ic <- summarySE(df, 
-                   measurevar = "nfp", 
-                   groupvars = c("seance", "methode"),
-                   na.rm = TRUE)
-
-df_ic
+(df_ic <- summarySE(df, measurevar = "nfp", groupvars = c("seance", "methode"), na.rm = TRUE))
 ```
 
 
@@ -340,10 +304,10 @@ Tendance difficile à exploiter.
 
 Nous savons par les analyses pour chaque seance plus haut, que
 
-- Semaine 1 : différences d'effet
-- Semaine 2 : différences d'effet
-- Semaine 3 : différences d'effet
-- Semaine 4 : pas de différences d'effet
+- Semaine 1 : différences d'effet, (poisson) alpha = 0.10 pour les contrstes
+- Semaine 2 : différences d'effet (poisson)
+- Semaine 3 : différences d'effet (poisson)
+- Semaine 4 : différences d'effet (quasi-poisson)
 
 
 Puisque les données ne répondent pas aux conditions pour évaluer les effets des méthodes au cours du temps, on négligera l'effet des méthodes pour évaluer globalement l'effet du temps.
@@ -378,53 +342,51 @@ Une observation témoin est classée aberrante pour la Semaine 1. Pas exclue.
 ```
 
 
-#### Homogénéité des variances et ANOVA, facteur temps
+#### Le modèle ANOVA, facteur temps
 
-Les autres conditions ont déjà été vérifiées.
-
-```{r message = FALSE, warning = FALSE}
-lm <- anova_test(data = df,
-                 dv = nfp,        # dependant variable, num
-                 wid = id,        # identificateur de cas/échantillon (facteur)
-                 within = seance) # facteur de groupement intra-sujets
-
-get_anova_table(lm)
+```{r}
+lm <- glm(nfp ~ seance, data = df, family = poisson)
+Anova(lm)
 ```
-
 
 #### Comparaisons par paires, facteur temps
 
 ```{r}
 lmo <- lm(nfp ~ seance, data = df)
-pwc_lmo = emmeans::emmeans(lmo, ~ seance)
-(cmo <- pairs(pwc_lmo) %>% as_tibble() %>% 
-    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", "Contraste 4", "Contraste 5", "Contraste 6")))
+pwc_lmo = emmeans(lmo, ~ seance)
+cmo <- pairs(pwc_lmo) %>% as_tibble() %>% 
+    mutate(no_contrast = c("Contraste 1", "Contraste 2", "Contraste 3", 
+                           "Contraste 4", "Contraste 5", "Contraste 6"))
+cmo %>% select(no_contrast, contrast, p.value)
 ```
 
+=> Différences significatives pour les contrastes 1 et 2. 
 
 ```{r}
-tph <- df %>%
-  pairwise_t_test(nfp ~ seance, 
-                  paired = TRUE,
-                  p.adjust.method = "bonferroni")
-
-tph %>% 
-  select(group1, group2, p, p.adj, p.adj.signif)
+plot(pairs(pwc_lmo))
 ```
 
-=> C'est la p-value qui nous intéresse et elle est < 0.05 pour certains contrates. Les 2 précédents codes ont des sorties différentes !
+Moyennes et écart-types et ajout de le colonne des groupes.
 
-#### Boxplots avec p-values
-
-```{r fp-temps-pwc, message = FALSE, warning = FALSE}
-tph <- tph %>% add_xy_position(x = "seance")
-
-ggboxplot(df, x = "seance", y = "nfp") + 
-  stat_pvalue_manual(tph) +
-  labs(subtitle = get_test_label(lm, detailed = TRUE), 
-       caption = get_pwc_label(tph))
+```{r}
+(cmo_moy <- summarySE(df, measurevar = "nfp", groupvars = "seance") %>% 
+   data.table::setorder(nfp) %>% 
+   mutate(groups = cld(pwc_lmo, alpha = 0.05, Letters = LETTERS)$.group))
 ```
 
+
+Sous forme graphique ...
+
+```{r fat-barplot}
+ggplot(data = cmo_moy, mapping = aes(x = seance, y = nfp)) +
+  geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.5) +
+  geom_text(aes(label = groups), vjust = -0.5, size = 4) +
+  ylim(0, 12) +
+  xlab("Séance") + ylab("Nombre de feuilles perforées") +
+  theme_bw()
+```
+
+Ici, ce sont les colonnes `seance`, `nfp` et `groups` que les étudiants peuvent exploiter pour reproduire ce même graphique en Excel. 
 
 
 

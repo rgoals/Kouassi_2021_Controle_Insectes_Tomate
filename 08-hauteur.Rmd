@@ -1,13 +1,13 @@
 
 # Hauteur des plants
 
-Évaluer si la hauteur des plants diffèrent significativement selon la méthode de contrôle appliquée.
+Évaluer si la hauteur des plants diffère significativement selon la méthode de contrôle appliquée.
 
 Jeu de données `kam.csv` qui contient différentes mesures dont les Hauteurs des plants (cm) mesurées en 4 séances.
 
-On pourrait également évaluer si les différentes méthodes induisent des hauteurs de plants significativement différentes avec le temps. On comparera les effets des methodes seance par seance, puis à l'aide d'une figure on appréciera s'il y a une évolution en fonction du temps.
+On pourrait également évaluer si les différentes méthodes induisent des hauteurs de plants significativement différentes avec le temps. On comparera les effets des méthodes semaine par semaine, puis à l'aide d'une figure on appréciera s'il y a une évolution en fonction du temps.
 
-> ** La vriable dépendante ici est quantitative, j'ai donc osé appliquer l'ANOVA à 1 facteur en vérifiant que le pseudo-blocage n'a pas eu d'effet.**
+> **La variable dépendante ici est quantitative, j'ai donc osé appliquer l'ANOVA à 1 facteur bien que les conditions expériementales ne le favorisent pas.**
 
 
 ```{r message=FALSE, warning=FALSE, echo=FALSE}
@@ -16,8 +16,9 @@ library("agricolae")
 library("car")
 library("rstatix")
 library("Rmisc")
-library("tidyverse")
 library("emmeans")
+library("multcomp")
+library("tidyverse")
 ```
 
 ## Les données
@@ -26,17 +27,10 @@ library("emmeans")
 df <- read_csv("data/kam.csv")
 df <- df %>% 
   mutate(id = rep(1:8, 4), .before = 1, seance = factor(seance),
-         methode = factor(methode), bloc = factor(bloc)) %>% 
-  select(id, seance, bloc, methode, haut) %>% 
-  mutate(id = factor(id))
+         methode = factor(methode, levels = c("Temoin", "Filet-anti-insectes", 
+                                              "Lutte-mecanique", "Cigogne-50-EC"))) %>% 
+  select(id, seance, bloc, methode, haut)
 ```
-
-Le tableau a été préalablement structuré en format long en Excel. J'ai ajouté un identifiant (`id`) pour les échantillons des seances.
-
-```{r message = FALSE, warning = FALSE}
-glimpse(df)
-```
-
 
 ## Visualisation boxplots
 
@@ -44,12 +38,12 @@ glimpse(df)
 bxp <- ggplot(df, aes(x = methode, y = haut, fill = methode)) +
   geom_boxplot() +
   facet_grid(seance ~ .) +
-  ylab("Hauteur des plants - cm") +
+  ylab("Hauteur des plants - cm") + xlab("Méthode") +
   theme_bw()
 bxp
 ```
 
-Il y a des variations notables d'une méthode à l'autre et éventuellement d'une séance à l'autre.
+Il y a des variations notables d'une méthode à l'autre et aussi d'une semaine à l'autre.
 
 ## Détection des valeurs aberrantes extrêmes
 
@@ -75,15 +69,13 @@ df %>%
   shapiro_test(haut)
 ```
 
-=> Normalité OK.
-
-Créer des QQ-plots pour chaque point par seance
+=> Normalité OK. Les QQ-plots ci-dessous le confirment également :
 
 ```{r hp-qqplot, message = FALSE, warning = FALSE}
 ggqqplot(df, "haut", facet.by = "seance")
 ```
 
-Tous les points se situent approximativement le long de la ligne de référence.
+=> Tous les points se situent approximativement le long de la ligne de référence.
 
 
 ### Homogénéité des variances
@@ -95,14 +87,12 @@ df %>%
   levene_test(haut ~ methode)
 ```
 
-=> Toutes les valeurs p sont < 0.05 => les variances ne sont pas homogènes ! Voyons plus tard avec les résidus ...
-
-Les conditions de la validité d'une ANOVA .... 
+=> Toutes les valeurs p sont < 0.05 => les variances ne sont pas homogènes ! Nous vérifierons plus tard avec les résidus des ANOVAs.
 
 
-## ANOVA
+## ANOVAs
 
-### Séance 1
+### Semaine 1
 
 #### Le modèle
 
@@ -126,13 +116,19 @@ leveneTest(residuals(lm1) ~ df1$methode)
 
 => Variances non homogènes
 
-=> Alternative Kruskal-Wallis
+=> Alternative 1 : ANOVA de Welch
+
+```{r}
+df1 %>% welch_anova_test(haut ~ methode)
+```
+
+=> Alternative 2 : Kruskal-Wallis
 
 ```{r}
 df1 %>% kruskal_test(haut ~ methode)
 ```
 
-=> Différence non significative entre les effets des méthodes également via la méthode non paramétrique.
+=> p.value > 0.05 : différence non significative entre les effets des méthodes également avec ces tests alternatifs.
 
 
 #### Comparaisons par paires
@@ -156,9 +152,7 @@ Supposant les conditions de l'ANOVA valide : (Student - Newman - Keuls).
 Moyennes et écart-types, avec les lettres (groupes)
 
 ```{r}
-(cm1_moy <- summarySE(df1, 
-                     measurevar = "haut", 
-                     groupvars = "methode") %>% 
+(cm1_moy <- summarySE(df1, measurevar = "haut", groupvars = "methode") %>% 
   data.table::setorder(-haut)) %>% 
   mutate(groups = cm1$groups)
 ```
@@ -170,38 +164,29 @@ Figure pas forcément nécessaire.
 ggplot(data = cm1, mapping = aes(x = methode, y = haut)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.6) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  xlab("méthodes") + ylab("Hauteur des plants - cm") +
+  ylim(0, 22) +
+  xlab("Méthode") + ylab("Hauteur des plants - cm") +
   theme_bw()
 ```
 
 
-### Séance 2
+### Semaine 2
 
 #### Le modèle
 
 ```{r}
 df2 <- df %>% filter(seance == "Semaine 2")
-
-(df2_out <- df2 %>%
-  identify_outliers(haut))
-```
-
-
-```{r}
-#df2 <- df2 %>% filter(! id %in% df2_out$id)
-```
-
-
-```{r}
 lm2 <- lm(haut ~ methode, data = df2)
 Anova(lm2)
 ```
 
-La p-value est > 0.05 => pas de différence significative entre les effets des méthodes.
+La p-value est > 0.05 => pas de différence significative entre les effets des méthodes sur la hauteur des plants à cette date.
 
 ```{r}
 shapiro_test(residuals(lm2))
 ```
+
+=> Normalité okay
 
 ```{r}
 leveneTest(residuals(lm2) ~ df2$methode)
@@ -209,13 +194,19 @@ leveneTest(residuals(lm2) ~ df2$methode)
 
 => Variances non homogènes
 
-=> Alternative Kruskal-Wallis
+=> Alternative 1 : ANOVA de Welch
+
+```{r}
+df2 %>% welch_anova_test(haut ~ methode)
+```
+
+=> Alternative 2 : Kruskal-Wallis
 
 ```{r}
 df2 %>% kruskal_test(haut ~ methode)
 ```
 
-=> Différence non significative entre les effets des méthodes également via la méthode non paramétrique.
+=> Différence non significative entre les effets des méthodes également ces alternatives.
 
 
 #### Comparaisons par paires
@@ -239,9 +230,7 @@ Supposant les conditions de l'ANOVA valide : (Student - Newman - Keuls).
 Moyennes et écart-types, avec les lettres (groupes)
 
 ```{r}
-(cm2_moy <- summarySE(df2, 
-                     measurevar = "haut", 
-                     groupvars = "methode") %>% 
+(cm2_moy <- summarySE(df2, measurevar = "haut", groupvars = "methode") %>% 
   data.table::setorder(-haut)) %>% 
   mutate(groups = cm2$groups)
 ```
@@ -253,12 +242,13 @@ Visualisation des groupes
 ggplot(data = cm2, mapping = aes(x = methode, y = haut)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.6) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  xlab("méthodes") + ylab("Hauteur des plants - cm") +
+  ylim(0, 30) +
+  xlab("Méthode") + ylab("Hauteur des plants - cm") +
   theme_bw()
 ```
 
 
-### Séance 3
+### Semaine 3
 
 #### Le modèle
 
@@ -268,7 +258,7 @@ lm3 <- lm(haut ~ methode, data = df3)
 Anova(lm3)
 ```
 
-La p-value > 0.05 => pas de différence significative entre les effets des méthodes sur le Hauteur des plants - cm. 
+La p-value > 0.05 => pas de différence significative entre les effets des méthodes sur la Hauteur des plants à cette date. 
 
 ```{r}
 shapiro_test(residuals(lm3))
@@ -282,13 +272,19 @@ leveneTest(residuals(lm3) ~ df3$methode)
 
 => Variances non homogènes
 
-=> Alternative Kruskal-Wallis
+=> Alternative 1 : ANOVA de Welch
+
+```{r}
+df3 %>% welch_anova_test(haut ~ methode)
+```
+
+=> Alternative 2 : Kruskal-Wallis
 
 ```{r}
 df3 %>% kruskal_test(haut ~ methode)
 ```
 
-=> Différence non significative entre les effets des méthodes également via la méthode non paramétrique.
+=> Différence non significative entre les effets des méthodes également avec toutes ces méthodes.
 
 
 #### Comparaisons par paires
@@ -312,9 +308,7 @@ Supposant les conditions de l'ANOVA valide : (Student - Newman - Keuls).
 Moyennes et écart-types, avec les lettres (groupes)
 
 ```{r}
-(cm3_moy <- summarySE(df3, 
-                     measurevar = "haut", 
-                     groupvars = "methode") %>% 
+(cm3_moy <- summarySE(df3, measurevar = "haut", groupvars = "methode") %>% 
   data.table::setorder(-haut)) %>% 
   mutate(groups = cm3$groups)
 ```
@@ -326,12 +320,13 @@ Visualisation des groupes
 ggplot(data = cm3, mapping = aes(x = methode, y = haut)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.6) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  xlab("méthodes") + ylab("Hauteur des plants - cm") +
+  ylim(0, 45) +
+  xlab("Méthode") + ylab("Hauteur des plants - cm") +
   theme_bw()
 ```
 
 
-### Séance 4
+### Semaine 4
 
 #### Le modèle
 
@@ -341,7 +336,7 @@ lm4 <- lm(haut ~ methode, data = df4)
 Anova(lm4)
 ```
 
-La p-value < 0.05 => différence significative entre les effets de certaines méthodes de lutte sur le Hauteur des plants - cm, la séance 4.
+La p-value = 0.01768 < 0.05 => différence significative entre les effets de certaines méthodes de lutte sur la Hauteur des plants à cette date.
 
 ```{r}
 shapiro_test(residuals(lm4))
@@ -355,13 +350,19 @@ leveneTest(residuals(lm4) ~ df4$methode)
 
 => Variances non homogènes
 
-=> Alternative Kruskal-Wallis
+=> Alternative 1 : ANOVA de Welch
+
+```{r}
+df4 %>% welch_anova_test(haut ~ methode)
+```
+
+=> Alternative 2 : Kruskal-Wallis
 
 ```{r}
 df4 %>% kruskal_test(haut ~ methode)
 ```
 
-=> Différence non significative entre les effets des méthodes selon la méthode non paramétrique.
+=> Différence non significative entre les effets des méthodes avec ces méthodes alternatives.
 
 
 #### Comparaisons par paires
@@ -375,7 +376,7 @@ df4 %>%
   #filter(p.adj.signif != "ns")
 ```
 
-Supposant les conditions de l'ANOVA valide : (Student - Newman - Keuls).
+Supposant les conditions de l'ANOVA valides : (Student - Newman - Keuls). Pourtant pas valides puisque variances non homogènes.
 
 ```{r}
 (cm4 <- (SNK.test(lm4, "methode", group = TRUE))$groups %>% 
@@ -385,13 +386,12 @@ Supposant les conditions de l'ANOVA valide : (Student - Newman - Keuls).
 Moyennes et écart-types, avec les lettres (groupes)
 
 ```{r}
-(cm4_moy <- summarySE(df4, 
-                     measurevar = "haut", 
-                     groupvars = "methode") %>% 
+(cm4_moy <- summarySE(df4, measurevar = "haut", groupvars = "methode") %>% 
   data.table::setorder(-haut)) %>% 
   mutate(groups = cm4$groups)
 ```
 
+=> En réalité tableau avec la même lettre "a" pour la variable `groups`. Ces lettre différentes seraient valables seulement si les variances étaient homogènes.
 
 Visualisation des groupes avec ce dernier cas.
 
@@ -399,22 +399,18 @@ Visualisation des groupes avec ce dernier cas.
 ggplot(data = cm4, mapping = aes(x = methode, y = haut)) +
   geom_bar(stat = "identity", color = "blue", fill = "grey", width = 0.6) +
   geom_text(aes(label = groups), vjust = -0.5, size = 4) +
-  xlab("méthodes") + ylab("Hauteur des plants - cm") +
+  ylim(0, 65) +
+  xlab("Méthode") + ylab("Hauteur des plants - cm") +
   theme_bw()
 ```
 
 
-
-## Évolution des Hauteurs de plants selon la méthode au cours du temps
+## Évolution des Hauteurs de plants au cours du temps
 
 ### Sommaire
 
 ```{r}
-df_ic <- summarySE(df, 
-                   measurevar = "haut", 
-                   groupvars = c("seance", "methode"),
-                   na.rm = TRUE)
-
+df_ic <- summarySE(df, measurevar = "haut", groupvars = c("seance", "methode"), na.rm = TRUE)
 df_ic
 ```
 
@@ -425,7 +421,7 @@ df_ic
 ggplot(df_ic, aes(x = seance, y = haut, colour = methode, group = methode)) + 
   geom_line(size = 1) +
   geom_point(size = 2) +
-  ylab("Hauteur des plants - cm") +
+  ylab("Hauteur des plants - cm") + xlab("Semaine") +
   theme_bw()
 ```
 
@@ -436,12 +432,14 @@ Nous savons par les analyses pour chaque seance plus haut, que
 - seance 1 : pas de différences signicatives
 - seance 2 : pas de différences signicatives
 - seance 3 : pas de différences signicatives
-- seance 4 : différences signicatives entre les méthodes en supposant les conditions de l'ANOVA valides.
+- seance 4 : différences signicatives entre les méthodes seulement si on suppose les conditions de l'ANOVA valides. Ce qui n'est pas le cas.
+
+=> En définitive, selon ces données, les différentes méthodes de contrôle des insectes n'ont produit aucune différence signifcative sur la hauteur des plants de tomate, les unes par rapport aux autres, durant toute l'expérimentation.
 
 
-Puisque les données ne répondent pas aux conditions pour évaluer les effets des méthodes au cours du temps, on négligera l'effet des méthodes pour évaluer globalement l'effet du temps.
+Puisque les données ne répondent pas aux conditions pour comparer les effets des méthodes au cours du temps, on négligera l'effet des méthodes pour évaluer globalement l'effet du temps.
 
-> **On pourrait se demander si les hauteurs des plants sur l'ensemble des méthodes, sont significativement différentes d'une seance à l'autre (c'est-à-dire avec le temps)**.
+> **On pourrait se demander si les hauteurs des plants sur l'ensemble des méthodes, sont significativement différentes d'une semaine à l'autre (c'est-à-dire avec le temps)**.
 
 ### Effet du temps
 
@@ -465,6 +463,7 @@ df_out <- df %>%
 df_out
 ```
 
+=> Pas de valeur aberrante extrême.
 
 ```{r}
 #df <- df %>% filter(id2 != ...)
@@ -476,30 +475,23 @@ df_out
 ANOVA avec correction des condition `get_anova_table()`.
 
 ```{r message = FALSE, warning = FALSE}
-lm <- anova_test(data = df,
-                 dv = haut,
-                 wid = id,
-                 within = seance)
-
+lm <- anova_test(data = df, dv = haut, wid = id, within = seance)
 get_anova_table(lm)
 ```
 
-=> C'est la p-value qui nous intéresse et elle est < 0.01 => différence très significative sur les hauteurs des plants entre certaines séances.
+=> C'est la p-value qui nous intéresse et elle est < 0.01 (3.34e-13) => différence très significative sur les hauteurs des plants entre certaines séances.
 
 
 #### Comparaisons par paires, facteur temps
 
 ```{r}
 tph <- df %>%
-  pairwise_t_test(haut ~ seance, 
-                  paired = TRUE,
-                  p.adjust.method = "bonferroni")
+  pairwise_t_test(haut ~ seance, paired = TRUE, p.adjust.method = "bonferroni")
 
-tph %>% 
-  select(group1, group2, p, p.adj, p.adj.signif)
+tph %>% select(group1, group2, p, p.adj, p.adj.signif)
 ```
 
-=> Presque toutes les paires sont significativement différentes.
+=> Toutes les paires sont significativement différentes sauf entre les semaines 1 et 2.
 
 #### Boxplots avec p-values
 
@@ -508,11 +500,10 @@ tph <- tph %>% add_xy_position(x = "seance")
 
 ggboxplot(df, x = "seance", y = "haut") + 
   stat_pvalue_manual(tph) +
-  labs(subtitle = get_test_label(lm, detailed = TRUE), 
-       caption = get_pwc_label(tph))
+  labs(subtitle = get_test_label(lm, detailed = TRUE), caption = get_pwc_label(tph))
 ```
 
-=> Évidemmenet croissance avec le temps.
+=> Évidemment croissance végétative avec le temps.
 
 
 
