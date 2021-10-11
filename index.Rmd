@@ -108,9 +108,14 @@ Diambla Bi Vanie Esai Monami
 
 ## Quelques remarques
 
-Il y a certainement trop de variables présentées avec le thème de Mme Koffi, si on les trouve toutes pertinentes ! Peut-être sortir la croissance de son thème et l'ajouter à celui de M. Diambla pour lui permettre d'avoir des nombres de pages conséquents par partie. C'est juste une proposition. 
+J'ai exploré les données sans ténir compte de pourquoi vous avez choisi de mesurer telle ou telle variable (beaucoup plus *défense des cultures*). 
 
-J'ai exploré les données sans ténir compte de pourquoi vous avez choisi de mesurer telle ou telle variable (beaucoup plus *défense des cultures*). Pour le nombre de trous dans les feuilles, j'ai regroupé les deux dernières catégories : 6 à 10 trous, et 10 trous et plus, en **6 trous et plus**. Il y avait trop de zéros ...
+Pour le nombre de trous dans les feuilles, j'ai regroupé les deux dernières catégories : 6 à 10 trous, et 10 trous et plus, en **6 trous et plus**. Il y avait trop de zéros. Malgré ce reroupement, il y a encore des zéros surtout dans la catégorie 6 trous et plus. Ce qui est incompatible avec les principes d'utilisation du Khi-2.
+
+L'étudiante pourrait seulement présenter les variables au chapitres 2, 3, 6 et 7.
+
+M. Diambla, les chapitres suivants.
+
 
 
 **ZC.**
